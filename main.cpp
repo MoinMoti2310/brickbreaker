@@ -9,7 +9,10 @@ struct GLMatrices {
 
 GLuint programID;
 
+map <int, entity> Brick;
+float camera_rotation_angle = 90;
 
+/*
 float triangle_rot_dir = 1;
 float rectangle_rot_dir = 1;
 bool triangle_rot_status = true;
@@ -19,12 +22,11 @@ bool rectangle_tra_status = true;
 
 VAO *triangle, *rectangle;
 
-float camera_rotation_angle = 90;
 float rectangle_rotation = 0;
 float rectangle_translation = 2;
 float triangle_rotation = 0;
 float triangle_translation = 0;
-
+*/
 /**************************
 * Customizable functions *
 **************************/
@@ -37,10 +39,10 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods) 
   if (action == GLFW_RELEASE) {
     switch (key) {
       case GLFW_KEY_C:
-      rectangle_rot_status = !rectangle_rot_status;
+//      rectangle_rot_status = !rectangle_rot_status;
       break;
       case GLFW_KEY_P:
-      triangle_rot_status = !triangle_rot_status;
+//      triangle_rot_status = !triangle_rot_status;
       break;
       case GLFW_KEY_X:
       // do something ..
@@ -77,11 +79,11 @@ void mouseButton (GLFWwindow* window, int button, int action, int mods) {
   switch (button) {
     case GLFW_MOUSE_BUTTON_LEFT:
     if (action == GLFW_RELEASE)
-    triangle_rot_dir *= -1;
+//    triangle_rot_dir *= -1;
     break;
     case GLFW_MOUSE_BUTTON_RIGHT:
     if (action == GLFW_RELEASE) {
-      rectangle_rot_dir *= -1;
+//      rectangle_rot_dir *= -1;
     }
     break;
     default:
@@ -115,54 +117,6 @@ void reshapeWindow (GLFWwindow* window, int width, int height) {
   Matrices.projection = glm::ortho(-4.0f, 4.0f, -4.0f, 4.0f, 0.1f, 500.0f);
 }
 
-// Creates the triangle object used in this sample code
-void createTriangle () {
-  /* ONLY vertices between the bounds specified in glm::ortho will be visible on screen */
-
-  /* Define vertex array as used in glBegin (GL_TRIANGLES) */
-  static const GLfloat vertex_buffer_data [] = {
-    0, 1,0, // vertex 0
-    -1,-1,0, // vertex 1
-    1,-1,0, // vertex 2
-  };
-
-  static const GLfloat color_buffer_data [] = {
-    1,0,0, // color 0
-    0,1,0, // color 1
-    0,0,1, // color 2
-  };
-
-  // create3DObject creates and returns a handle to a VAO that can be used later
-  triangle = create3DObject(GL_TRIANGLES, 3, vertex_buffer_data, color_buffer_data, GL_LINE);
-}
-
-// Creates the rectangle object used in this sample code
-void createRectangle () {
-  // GL3 accepts only Triangles. Quads are not supported
-  static const GLfloat vertex_buffer_data [] = {
-    -1.2,-1,0, // vertex 1
-    -1,-1,0, // vertex 2
-    -1, 1,0, // vertex 3
-
-    -1, 1,0, // vertex 3
-    -1.2, 1,0, // vertex 4
-    -1.2,-1,0  // vertex 1
-  };
-
-  static const GLfloat color_buffer_data [] = {
-    1,0,0, // color 1
-    0,0,1, // color 2
-    0,1,0, // color 3
-
-    0,1,0, // color 3
-    0.3,0.3,0.3, // color 4
-    1,0,0  // color 1
-  };
-
-  // create3DObject creates and returns a handle to a VAO that can be used later
-  rectangle = create3DObject(GL_TRIANGLES, 6, vertex_buffer_data, color_buffer_data, GL_FILL);
-}
-
 /* Render the scene with openGL */
 /* Edit this function according to your assignment */
 void draw () {
@@ -194,10 +148,28 @@ void draw () {
   //  Don't change unless you are sure!!
   glm::mat4 MVP;	// MVP = Projection * View * Model
 
-  // Load identity to model matrix
-  Matrices.model = glm::mat4(1.0f);
+  for (auto i = Brick.begin(); i != Brick.end(); i++) {
+    int current = i->first;
+    Matrices.model = glm::mat4(1.0f);
+    glm::mat4 translateObject = glm::translate(glm::vec3(Brick[current].x, Brick[current].y, 0.0f));
+    Matrices.model *= translateObject;
+    MVP = VP * Matrices.model;
 
-  /* Render your scene */
+    glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+    draw3DObject(Brick[current].object);
+
+  }
+
+  float translation_increments = 0.01;
+
+  for (auto i = Brick.begin(); i != Brick.end(); i++) {
+    Brick[i->first].y = Brick[i->first].y - translation_increments;
+  }
+
+  // Load identity to model matrix
+/*  Matrices.model = glm::mat4(1.0f);
+
+//  Render your scene
 
   glm::mat4 translateTriangle = glm::translate (glm::vec3(-2.0f, 0.0f, 0.0f)); // glTranslatef
   glm::mat4 rotateTriangle = glm::rotate((float)(triangle_rotation*M_PI/180.0f), glm::vec3(0,0,1));  // rotate about vector (1,0,0)
@@ -234,6 +206,7 @@ void draw () {
   float translation_increments = 0.01;
   // translation
   rectangle_translation = rectangle_translation - translation_increments*rectangle_tra_status;
+*/
 }
 
 /* Initialise glfw window, I/O callbacks and the renderer to use */
@@ -288,9 +261,9 @@ GLFWwindow* initGLFW (int width, int height) {
 void initGL (GLFWwindow* window, int width, int height) {
   /* Objects should be created before any other gl function and shaders */
   // Create the models
-  createTriangle (); // Generate the VAO, VBOs, vertices data & copy into the array buffer
-  createRectangle ();
-
+//  createTriangle (); // Generate the VAO, VBOs, vertices data & copy into the array buffer
+//  createRectangle ();
+  brickEngine(10);
   // Create and compile our GLSL program from the shaders
   programID = LoadShaders( "Sample_GL.vert", "Sample_GL.frag" );
   // Get a handle for our "MVP" uniform
@@ -312,10 +285,11 @@ void initGL (GLFWwindow* window, int width, int height) {
   cout << "GLSL: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << endl;
 }
 
-int main (int argc, char** argv)
-{
+int main (int argc, char** argv) {
   int width = 600;
   int height = 600;
+
+  srand((unsigned)time(0));
 
   GLFWwindow* window = initGLFW(width, height);
 

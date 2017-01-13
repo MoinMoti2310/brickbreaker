@@ -1,10 +1,7 @@
 #ifndef headerFile
 #define headerFile
 
-#include <iostream>
-#include <cmath>
-#include <fstream>
-#include <vector>
+#include <bits/stdc++.h>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -27,10 +24,30 @@ struct VAO {
 };
 typedef struct VAO VAO;
 
+typedef struct COLOR {
+  float r;
+  float g;
+  float b;
+}COLOR;
+
+typedef struct entity {
+  string id;
+  COLOR color;
+  float x, y;
+  VAO *object;
+  int status;
+  float height, width;
+  float xspeed, yspeed;
+}entity;
+
+extern map <int, entity> Brick;
+
 extern struct GLMatrices Matrices;
 
 extern GLuint programID;
+extern float camera_rotation_angle;
 
+/*
 extern float triangle_rot_dir;
 extern float rectangle_rot_dir;
 extern bool triangle_rot_status;
@@ -40,12 +57,11 @@ extern bool rectangle_tra_status;
 
 extern VAO *triangle, *rectangle;
 
-extern float camera_rotation_angle;
 extern float rectangle_rotation;
 extern float rectangle_translation;
 extern float triangle_rotation;
 extern float triangle_translation;
-
+*/
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path);
 static void error_callback(int error, const char* description)
 {
@@ -64,5 +80,8 @@ void createRectangle ();
 void draw ();
 GLFWwindow* initGLFW (int width, int height);
 void initGL (GLFWwindow* window, int width, int height);
+void createBricks (int id, float x, float y, COLOR a_color, COLOR b_color, COLOR c_color, COLOR d_color, float w, float h);
+void brickEngine(int quantity);
+
 
 #endif
