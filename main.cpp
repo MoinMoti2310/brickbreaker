@@ -207,6 +207,8 @@ float triangle_rot_dir = 1;
 float rectangle_rot_dir = 1;
 bool triangle_rot_status = true;
 bool rectangle_rot_status = false;
+bool triangle_tra_status = false;
+bool rectangle_tra_status = true;
 
 /* Executed when a regular key is pressed/released/held-down */
 /* Prefered for Keyboard events */
@@ -346,7 +348,9 @@ void createRectangle () {
 
 float camera_rotation_angle = 90;
 float rectangle_rotation = 0;
+float rectangle_translation = 2;
 float triangle_rotation = 0;
+float triangle_translation = 0;
 
 /* Render the scene with openGL */
 /* Edit this function according to your assignment */
@@ -400,7 +404,7 @@ void draw () {
   // glPopMatrix ();
   Matrices.model = glm::mat4(1.0f);
 
-  glm::mat4 translateRectangle = glm::translate (glm::vec3(2, 0, 0));        // glTranslatef
+  glm::mat4 translateRectangle = glm::translate (glm::vec3(2, rectangle_translation, 0));        // glTranslatef
   glm::mat4 rotateRectangle = glm::rotate((float)(rectangle_rotation*M_PI/180.0f), glm::vec3(0,0,1)); // rotate about vector (-1,1,1)
   Matrices.model *= (translateRectangle * rotateRectangle);
   MVP = VP * Matrices.model;
@@ -415,6 +419,10 @@ void draw () {
   //camera_rotation_angle++; // Simulating camera rotation
   triangle_rotation = triangle_rotation + increments*triangle_rot_dir*triangle_rot_status;
   rectangle_rotation = rectangle_rotation + increments*rectangle_rot_dir*rectangle_rot_status;
+
+  float translation_increments = 0.01;
+  // translation
+  rectangle_translation = rectangle_translation - translation_increments*rectangle_tra_status;
 }
 
 /* Initialise glfw window, I/O callbacks and the renderer to use */
