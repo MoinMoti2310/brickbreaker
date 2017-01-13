@@ -1,0 +1,11 @@
+Compiling shader : Sample_GL.vert
+
+Compiling shader : Sample_GL.frag
+
+Linking program
+
+VENDOR: Intel Open Source Technology Center
+RENDERER: Mesa DRI Intel(R) HD Graphics 520 (Skylake GT2) 
+VERSION: 3.3 (Core Profile) Mesa 11.2.0
+GLSL: 3.30
+exit
