@@ -75,11 +75,22 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods) 
       case GLFW_KEY_X:
       // do something ..
       break;
+      case GLFW_KEY_A:
+      Basket["left"].x -= 0.03;
+      break;
+      case GLFW_KEY_D:
+      Basket["left"].x += 0.03;
+      break;
+      case GLFW_KEY_J:
+      Basket["right"].x -= 0.03;
+      break;
+      case GLFW_KEY_L:
+      Basket["right"].x += 0.03;
+      break;
       default:
       break;
     }
-  }
-  else if (action == GLFW_PRESS) {
+  } else if (action == GLFW_PRESS) {
     switch (key) {
       case GLFW_KEY_ESCAPE:
       quit(window);
