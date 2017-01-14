@@ -10,7 +10,35 @@ struct GLMatrices {
 GLuint programID;
 
 map <int, entity> Brick;
+map <string, entity> Basket;
+
 float camera_rotation_angle = 90;
+
+COLOR grey = {168.0/255.0,168.0/255.0,168.0/255.0};
+COLOR gold = {218.0/255.0,165.0/255.0,32.0/255.0};
+COLOR coingold = {255.0/255.0,223.0/255.0,0.0/255.0};
+COLOR red = {255.0/255.0,51.0/255.0,51.0/255.0};
+COLOR lightgreen = {57/255.0,230/255.0,0/255.0};
+COLOR darkgreen = {51/255.0,102/255.0,0/255.0};
+COLOR black = {30/255.0,30/255.0,21/255.0};
+COLOR blue = {0,0,1};
+COLOR darkbrown = {46/255.0,46/255.0,31/255.0};
+COLOR lightbrown = {95/255.0,63/255.0,32/255.0};
+COLOR brown1 = {117/255.0,78/255.0,40/255.0};
+COLOR brown2 = {134/255.0,89/255.0,40/255.0};
+COLOR brown3 = {46/255.0,46/255.0,31/255.0};
+COLOR cratebrown = {153/255.0,102/255.0,0/255.0};
+COLOR cratebrown1 = {121/255.0,85/255.0,0/255.0};
+COLOR cratebrown2 = {102/255.0,68/255.0,0/255.0};
+COLOR skyblue2 = {113/255.0,185/255.0,209/255.0};
+COLOR skyblue1 = {123/255.0,201/255.0,227/255.0};
+COLOR skyblue = {132/255.0,217/255.0,245/255.0};
+COLOR cloudwhite = {229/255.0,255/255.0,255/255.0};
+COLOR cloudwhite1 = {204/255.0,255/255.0,255/255.0};
+COLOR lightpink = {255/255.0,122/255.0,173/255.0};
+COLOR darkpink = {255/255.0,51/255.0,119/255.0};
+COLOR white = {255/255.0,255/255.0,255/255.0};
+COLOR score = {117/255.0,78/255.0,40/255.0};
 
 /*
 float triangle_rot_dir = 1;
@@ -160,6 +188,17 @@ void draw () {
 
   }
 
+  for (auto i = Basket.begin(); i != Basket.end(); i++) {
+    string current = i->first;
+    Matrices.model = glm::mat4(1.0f);
+    glm::mat4 translateObject = glm::translate(glm::vec3(Basket[current].x, Basket[current].y, 0.0f));
+    Matrices.model *= translateObject;
+    MVP = VP * Matrices.model;
+
+    glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+    draw3DObject(Basket[current].object);
+}
+
   float translation_increments = 0.01;
 
   for (auto i = Brick.begin(); i != Brick.end(); i++) {
@@ -264,6 +303,7 @@ void initGL (GLFWwindow* window, int width, int height) {
 //  createTriangle (); // Generate the VAO, VBOs, vertices data & copy into the array buffer
 //  createRectangle ();
   brickEngine(10);
+  basketEngine();
   // Create and compile our GLSL program from the shaders
   programID = LoadShaders( "Sample_GL.vert", "Sample_GL.frag" );
   // Get a handle for our "MVP" uniform

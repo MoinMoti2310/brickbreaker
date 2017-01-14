@@ -1,30 +1,5 @@
 #include "headerFile.h"
 
-COLOR grey = {168.0/255.0,168.0/255.0,168.0/255.0};
-COLOR gold = {218.0/255.0,165.0/255.0,32.0/255.0};
-COLOR coingold = {255.0/255.0,223.0/255.0,0.0/255.0};
-COLOR red = {255.0/255.0,51.0/255.0,51.0/255.0};
-COLOR lightgreen = {57/255.0,230/255.0,0/255.0};
-COLOR darkgreen = {51/255.0,102/255.0,0/255.0};
-COLOR black = {30/255.0,30/255.0,21/255.0};
-COLOR blue = {0,0,1};
-COLOR darkbrown = {46/255.0,46/255.0,31/255.0};
-COLOR lightbrown = {95/255.0,63/255.0,32/255.0};
-COLOR brown1 = {117/255.0,78/255.0,40/255.0};
-COLOR brown2 = {134/255.0,89/255.0,40/255.0};
-COLOR brown3 = {46/255.0,46/255.0,31/255.0};
-COLOR cratebrown = {153/255.0,102/255.0,0/255.0};
-COLOR cratebrown1 = {121/255.0,85/255.0,0/255.0};
-COLOR cratebrown2 = {102/255.0,68/255.0,0/255.0};
-COLOR skyblue2 = {113/255.0,185/255.0,209/255.0};
-COLOR skyblue1 = {123/255.0,201/255.0,227/255.0};
-COLOR skyblue = {132/255.0,217/255.0,245/255.0};
-COLOR cloudwhite = {229/255.0,255/255.0,255/255.0};
-COLOR cloudwhite1 = {204/255.0,255/255.0,255/255.0};
-COLOR lightpink = {255/255.0,122/255.0,173/255.0};
-COLOR darkpink = {255/255.0,51/255.0,119/255.0};
-COLOR white = {255/255.0,255/255.0,255/255.0};
-COLOR score = {117/255.0,78/255.0,40/255.0};
 
 /*
 // Creates the triangle object used in this sample code
@@ -89,11 +64,11 @@ void createBricks (int id, float x, float y, COLOR a_color, COLOR b_color, COLOR
   GLfloat color_buffer_data [] = {
     // color for respective vertices;
     a_color.r, a_color.g, a_color.b,
-    a_color.r, a_color.g, a_color.b,
-    a_color.r, a_color.g, a_color.b,
+    b_color.r, b_color.g, b_color.b,
+    c_color.r, c_color.g, c_color.b,
 
-    a_color.r, a_color.g, a_color.b,
-    a_color.r, a_color.g, a_color.b,
+    c_color.r, c_color.g, c_color.b,
+    d_color.r, d_color.g, d_color.b,
     a_color.r, a_color.g, a_color.b,
   };
 

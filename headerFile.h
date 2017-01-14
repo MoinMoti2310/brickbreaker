@@ -30,6 +30,32 @@ typedef struct COLOR {
   float b;
 }COLOR;
 
+extern COLOR grey;
+extern COLOR gold;
+extern COLOR coingold;
+extern COLOR red;
+extern COLOR lightgreen;
+extern COLOR darkgreen;
+extern COLOR black;
+extern COLOR blue;
+extern COLOR darkbrown;
+extern COLOR lightbrown;
+extern COLOR brown1;
+extern COLOR brown2;
+extern COLOR brown3;
+extern COLOR cratebrown;
+extern COLOR cratebrown1;
+extern COLOR cratebrown2;
+extern COLOR skyblue2;
+extern COLOR skyblue1;
+extern COLOR skyblue;
+extern COLOR cloudwhite;
+extern COLOR cloudwhite1;
+extern COLOR lightpink;
+extern COLOR darkpink;
+extern COLOR white;
+extern COLOR score;
+
 typedef struct entity {
   string id;
   COLOR color;
@@ -41,6 +67,7 @@ typedef struct entity {
 }entity;
 
 extern map <int, entity> Brick;
+extern map <string, entity> Basket;
 
 extern struct GLMatrices Matrices;
 
@@ -82,6 +109,8 @@ GLFWwindow* initGLFW (int width, int height);
 void initGL (GLFWwindow* window, int width, int height);
 void createBricks (int id, float x, float y, COLOR a_color, COLOR b_color, COLOR c_color, COLOR d_color, float w, float h);
 void brickEngine(int quantity);
+void createBaskets(string id, float x, float y, float w, float h, COLOR a_color, COLOR b_color, COLOR c_color, COLOR d_color);
+void basketEngine();
 
 
 #endif
