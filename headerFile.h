@@ -32,6 +32,7 @@ typedef struct COLOR {
 
 extern COLOR grey;
 extern COLOR silver;
+extern COLOR sun;
 extern COLOR gold;
 extern COLOR coingold;
 extern COLOR red;
@@ -96,8 +97,7 @@ extern float triangle_rotation;
 extern float triangle_translation;
 */
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path);
-static void error_callback(int error, const char* description)
-{
+static void error_callback(int error, const char* description) {
   fprintf(stderr, "Error: %s\n", description);
 }
 void quit(GLFWwindow *window);
@@ -117,6 +117,8 @@ void createBricks (int id, float x, float y, COLOR a_color, COLOR b_color, COLOR
 void brickEngine(int quantity);
 void createBaskets(string id, float x, float y, float w, float h, COLOR a_color, COLOR b_color, COLOR c_color, COLOR d_color);
 void basketEngine();
+void createCircle (string id, COLOR color, float x, float y, float r, int parts, string component);
+void backgroundObjectsEngine();
 
 
 #endif

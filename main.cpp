@@ -17,6 +17,7 @@ float camera_rotation_angle = 90;
 
 COLOR grey = {168.0/255.0,168.0/255.0,168.0/255.0};
 COLOR silver = {192.0/255.0,192.0/255.0,192.0/255.0};
+COLOR sun = {233.0/255.0,189.0/255.0,21.0/255.0};
 COLOR gold = {218.0/255.0,165.0/255.0,32.0/255.0};
 COLOR coingold = {255.0/255.0,223.0/255.0,0.0/255.0};
 COLOR red = {255.0/255.0,51.0/255.0,51.0/255.0};
@@ -69,10 +70,10 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods) 
   if (action == GLFW_RELEASE) {
     switch (key) {
       case GLFW_KEY_C:
-//      rectangle_rot_status = !rectangle_rot_status;
+      //      rectangle_rot_status = !rectangle_rot_status;
       break;
       case GLFW_KEY_P:
-//      triangle_rot_status = !triangle_rot_status;
+      //      triangle_rot_status = !triangle_rot_status;
       break;
       case GLFW_KEY_X:
       // do something ..
@@ -132,11 +133,11 @@ void mouseButton (GLFWwindow* window, int button, int action, int mods) {
   switch (button) {
     case GLFW_MOUSE_BUTTON_LEFT:
     if (action == GLFW_RELEASE)
-//    triangle_rot_dir *= -1;
+    //    triangle_rot_dir *= -1;
     break;
     case GLFW_MOUSE_BUTTON_RIGHT:
     if (action == GLFW_RELEASE) {
-//      rectangle_rot_dir *= -1;
+      //      rectangle_rot_dir *= -1;
     }
     break;
     default:
@@ -222,7 +223,18 @@ void draw () {
 
     glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
     draw3DObject(Basket[current].object);
-}
+  }
+
+  for (auto i = BackgroundObject.begin(); i != BackgroundObject.end(); i++) {
+    string current = i->first;
+    Matrices.model = glm::mat4(1.0f);
+    glm::mat4 translateObject = glm::translate(glm::vec3(BackgroundObject[current].x, BackgroundObject[current].y, 0.0f));
+    Matrices.model *= translateObject;
+    MVP = VP * Matrices.model;
+
+    glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+    draw3DObject(BackgroundObject[current].object);
+  }
 
   float translation_increments = 0.01;
 
@@ -236,9 +248,9 @@ void draw () {
   Basket["right"].x += (Basket["right"].right_translation_status) ? 0.01 : 0;
 
   // Load identity to model matrix
-/*  Matrices.model = glm::mat4(1.0f);
+  /*  Matrices.model = glm::mat4(1.0f);
 
-//  Render your scene
+  //  Render your scene
 
   glm::mat4 translateTriangle = glm::translate (glm::vec3(-2.0f, 0.0f, 0.0f)); // glTranslatef
   glm::mat4 rotateTriangle = glm::rotate((float)(triangle_rotation*M_PI/180.0f), glm::vec3(0,0,1));  // rotate about vector (1,0,0)
@@ -275,7 +287,7 @@ void draw () {
   float translation_increments = 0.01;
   // translation
   rectangle_translation = rectangle_translation - translation_increments*rectangle_tra_status;
-*/
+  */
 }
 
 /* Initialise glfw window, I/O callbacks and the renderer to use */
@@ -330,10 +342,11 @@ GLFWwindow* initGLFW (int width, int height) {
 void initGL (GLFWwindow* window, int width, int height) {
   /* Objects should be created before any other gl function and shaders */
   // Create the models
-//  createTriangle (); // Generate the VAO, VBOs, vertices data & copy into the array buffer
-//  createRectangle ();
+  //  createTriangle (); // Generate the VAO, VBOs, vertices data & copy into the array buffer
+  //  createRectangle ();
   brickEngine(1000);
   basketEngine();
+  backgroundObjectsEngine();
   // Create and compile our GLSL program from the shaders
   programID = LoadShaders( "Sample_GL.vert", "Sample_GL.frag" );
   // Get a handle for our "MVP" uniform

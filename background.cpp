@@ -1,7 +1,6 @@
 #include "headerFile.h"
 
-void createCircle (string id, COLOR color, float x, float y, float r, int parts, string component)
-{
+void createCircle (string id, COLOR color, float x, float y, float r, int parts, string component) {
     GLfloat vertex_buffer_data[parts*9];
     GLfloat color_buffer_data[parts*9];
     int i,j;
@@ -28,7 +27,12 @@ void createCircle (string id, COLOR color, float x, float y, float r, int parts,
     entity circle = {};
     circle.x = x;
     circle.y = y;
+    circle.color = color;
     circle.radius = r;
     circle.object = object;
     BackgroundObject[id] = circle;
+  }
+
+  void backgroundObjectsEngine () {
+    createCircle("sun", sun, -3.0, 3.0, 0.5, 100000, "sun");
   }
