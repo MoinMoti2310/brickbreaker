@@ -76,6 +76,7 @@ typedef struct entity {
 extern vector <entity> Brick;
 extern map <string, entity> Basket;
 extern map <string, entity> BackgroundObject;
+extern map <string, entity> LaserObject;
 
 extern struct GLMatrices Matrices;
 
@@ -121,6 +122,8 @@ void basketEngine();
 void createCircle (string id, COLOR color, float x, float y, float r, int parts, string component);
 void backgroundObjectsEngine();
 void checkCollisionBrick();
+void createGun(float x, float y, float w, float h, float angle, COLOR color);
+void laserGunEngine();
 
 
 #endif

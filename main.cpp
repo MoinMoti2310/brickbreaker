@@ -12,6 +12,7 @@ GLuint programID;
 vector <entity> Brick;
 map <string, entity> Basket;
 map <string, entity> BackgroundObject;
+map <string, entity> LaserObject;
 
 float camera_rotation_angle = 90;
 
@@ -213,6 +214,17 @@ void draw () {
     draw3DObject(BackgroundObject[current].object);
   }
 
+  for (auto i = LaserObject.begin(); i != LaserObject.end(); i++) {
+    string current = i->first;
+    Matrices.model = glm::mat4(1.0f);
+    glm::mat4 translateObject = glm::translate(glm::vec3(LaserObject[current].x, LaserObject[current].y, 0.0f));
+    Matrices.model *= translateObject;
+    MVP = VP * Matrices.model;
+
+    glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+    draw3DObject(LaserObject[current].object);
+  }
+
   for (auto i = Brick.begin(); i != Brick.end(); i++) {
     Matrices.model = glm::mat4(1.0f);
     glm::mat4 translateObject = glm::translate(glm::vec3((*i).x, (*i).y, 0.0f));
@@ -348,6 +360,7 @@ void initGL (GLFWwindow* window, int width, int height) {
   //  createTriangle (); // Generate the VAO, VBOs, vertices data & copy into the array buffer
   //  createRectangle ();
   backgroundObjectsEngine();
+  laserGunEngine();
   brickEngine(10);
   basketEngine();
   // Create and compile our GLSL program from the shaders
