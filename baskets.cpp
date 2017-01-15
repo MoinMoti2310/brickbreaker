@@ -29,6 +29,8 @@ void createBaskets(string id, float x, float y, float w, float h, COLOR a_color,
   basket.object = object;
   basket.width = w;
   basket.height = h;
+  basket.left_translation_status = 0;
+  basket.right_translation_status = 0;
   Basket[id] = basket;
 }
 

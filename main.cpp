@@ -16,6 +16,7 @@ map <string, entity> BackgroundObject;
 float camera_rotation_angle = 90;
 
 COLOR grey = {168.0/255.0,168.0/255.0,168.0/255.0};
+COLOR silver = {192.0/255.0,192.0/255.0,192.0/255.0};
 COLOR gold = {218.0/255.0,165.0/255.0,32.0/255.0};
 COLOR coingold = {255.0/255.0,223.0/255.0,0.0/255.0};
 COLOR red = {255.0/255.0,51.0/255.0,51.0/255.0};
@@ -77,16 +78,16 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods) 
       // do something ..
       break;
       case GLFW_KEY_A:
-      Basket["left"].x -= 0.03;
+      Basket["left"].left_translation_status = 0;
       break;
       case GLFW_KEY_D:
-      Basket["left"].x += 0.03;
+      Basket["left"].right_translation_status = 0;
       break;
       case GLFW_KEY_J:
-      Basket["right"].x -= 0.03;
+      Basket["right"].left_translation_status = 0;
       break;
       case GLFW_KEY_L:
-      Basket["right"].x += 0.03;
+      Basket["right"].right_translation_status = 0;
       break;
       default:
       break;
@@ -95,6 +96,18 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods) 
     switch (key) {
       case GLFW_KEY_ESCAPE:
       quit(window);
+      break;
+      case GLFW_KEY_A:
+      Basket["left"].left_translation_status = 1;
+      break;
+      case GLFW_KEY_D:
+      Basket["left"].right_translation_status = 1;
+      break;
+      case GLFW_KEY_J:
+      Basket["right"].left_translation_status = 1;
+      break;
+      case GLFW_KEY_L:
+      Basket["right"].right_translation_status = 1;
       break;
       default:
       break;
@@ -217,6 +230,11 @@ void draw () {
     Brick[i->first].y = Brick[i->first].y - translation_increments;
   }
 
+  Basket["left"].x -= (Basket["left"].left_translation_status) ? 0.01 : 0;
+  Basket["right"].x -= (Basket["right"].left_translation_status) ? 0.01 : 0;
+  Basket["left"].x += (Basket["left"].right_translation_status) ? 0.01 : 0;
+  Basket["right"].x += (Basket["right"].right_translation_status) ? 0.01 : 0;
+
   // Load identity to model matrix
 /*  Matrices.model = glm::mat4(1.0f);
 
@@ -314,7 +332,7 @@ void initGL (GLFWwindow* window, int width, int height) {
   // Create the models
 //  createTriangle (); // Generate the VAO, VBOs, vertices data & copy into the array buffer
 //  createRectangle ();
-  brickEngine(10);
+  brickEngine(1000);
   basketEngine();
   // Create and compile our GLSL program from the shaders
   programID = LoadShaders( "Sample_GL.vert", "Sample_GL.frag" );

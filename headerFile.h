@@ -31,6 +31,7 @@ typedef struct COLOR {
 }COLOR;
 
 extern COLOR grey;
+extern COLOR silver;
 extern COLOR gold;
 extern COLOR coingold;
 extern COLOR red;
@@ -65,6 +66,9 @@ typedef struct entity {
   int status;
   float height, width;
   float xspeed, yspeed;
+  bool left_translation_status;
+  bool right_translation_status;
+  int value;
 }entity;
 
 extern map <int, entity> Brick;

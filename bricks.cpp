@@ -50,7 +50,7 @@ void createRectangle () {
   rectangle = create3DObject(GL_TRIANGLES, 6, vertex_buffer_data, color_buffer_data, GL_FILL);
 }
 */
-void createBricks (int id, float x, float y, COLOR a_color, COLOR b_color, COLOR c_color, COLOR d_color, float w, float h) {
+void createBricks (int id, int value, float x, float y, COLOR a_color, COLOR b_color, COLOR c_color, COLOR d_color, float w, float h) {
   GLfloat vertex_buffer_data [] = {
     -w,-h,0, // vertex 1
     -w,h,0, // vertex 2
@@ -79,17 +79,27 @@ void createBricks (int id, float x, float y, COLOR a_color, COLOR b_color, COLOR
   brick.object = object;
   brick.width = w;
   brick.height = h;
+  brick.value = value;
   Brick[id] = brick;
 }
 
 void brickEngine(int quantity) {
   for (int i = 0; i < quantity; i++) {
-    auto value = rand();
-    float x = -2 + value%6;
+    auto rand_value = rand();
+    float x = -2 + rand_value%6;
     float y = 5.5 + i;
     COLOR color;
-    if (value % 3 < 2) color = (value % 3) ? red : black;
+    int brick_value = 10;
+    if (rand_value % 3 < 2) color = (rand_value % 3) ? red : black;
     else color = darkgreen;
-    createBricks(i, x, y, color, color, color, color, 0.1, 0.2);
+    if (rand_value % 50 == 0) {
+      color = silver;
+      brick_value = 50;
+    }
+    if (rand_value % 100 == 0) {
+      color = gold;
+      brick_value = 100;
+    }
+    createBricks(i, brick_value, x, y, color, color, color, color, 0.1, 0.2);
   }
 }
