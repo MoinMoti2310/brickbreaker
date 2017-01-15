@@ -51,6 +51,8 @@ void createRectangle () {
 }
 */
 void createBricks (int id, int value, float x, float y, COLOR a_color, COLOR b_color, COLOR c_color, COLOR d_color, float w, float h) {
+  w = w/2;
+  h = h/2;
   GLfloat vertex_buffer_data [] = {
     -w,-h,0, // vertex 1
     -w,h,0, // vertex 2
@@ -77,10 +79,10 @@ void createBricks (int id, int value, float x, float y, COLOR a_color, COLOR b_c
   brick.x = x;
   brick.y = y;
   brick.object = object;
-  brick.width = w;
-  brick.height = h;
+  brick.width = 2*w;
+  brick.height = 2*h;
   brick.value = value;
-  Brick[id] = brick;
+  Brick.push_back(brick);
 }
 
 void brickEngine(int quantity) {
@@ -100,6 +102,6 @@ void brickEngine(int quantity) {
       color = gold;
       brick_value = 100;
     }
-    createBricks(i, brick_value, x, y, color, color, color, color, 0.1, 0.2);
+    createBricks(i, brick_value, x, y, color, color, color, color, 0.2, 0.4);
   }
 }

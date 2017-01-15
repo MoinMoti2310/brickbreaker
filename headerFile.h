@@ -72,7 +72,7 @@ typedef struct entity {
   int value;
 }entity;
 
-extern map <int, entity> Brick;
+extern vector <entity> Brick;
 extern map <string, entity> Basket;
 extern map <string, entity> BackgroundObject;
 

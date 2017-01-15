@@ -1,6 +1,8 @@
 #include "headerFile.h"
 
 void createBaskets(string id, float x, float y, float w, float h, COLOR a_color, COLOR b_color, COLOR c_color, COLOR d_color) {
+  w = w/2;
+  h = h/2;
   GLfloat vertex_buffer_data [] = {
     -w,-h,0, // vertex 1
     -w,h,0, // vertex 2
@@ -27,14 +29,14 @@ void createBaskets(string id, float x, float y, float w, float h, COLOR a_color,
   basket.x = x;
   basket.y = y;
   basket.object = object;
-  basket.width = w;
-  basket.height = h;
+  basket.width = 2*w;
+  basket.height = 2*h;
   basket.left_translation_status = 0;
   basket.right_translation_status = 0;
   Basket[id] = basket;
 }
 
 void basketEngine() {
-  createBaskets("left", -2.0, -3.5, 0.4, 0.2, red, red, red, red);
-  createBaskets("right", 2.0, -3.5, 0.4, 0.2, darkgreen, darkgreen, darkgreen, darkgreen);
+  createBaskets("left", -2.0, -3.5, 0.8, 0.4, red, red, red, red);
+  createBaskets("right", 2.0, -3.5, 0.8, 0.4, darkgreen, darkgreen, darkgreen, darkgreen);
 }

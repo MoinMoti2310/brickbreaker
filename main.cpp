@@ -9,7 +9,7 @@ struct GLMatrices {
 
 GLuint programID;
 
-map <int, entity> Brick;
+vector <entity> Brick;
 map <string, entity> Basket;
 map <string, entity> BackgroundObject;
 
@@ -202,15 +202,25 @@ void draw () {
   //  Don't change unless you are sure!!
   glm::mat4 MVP;	// MVP = Projection * View * Model
 
-  for (auto i = Brick.begin(); i != Brick.end(); i++) {
-    int current = i->first;
+  for (auto i = BackgroundObject.begin(); i != BackgroundObject.end(); i++) {
+    string current = i->first;
     Matrices.model = glm::mat4(1.0f);
-    glm::mat4 translateObject = glm::translate(glm::vec3(Brick[current].x, Brick[current].y, 0.0f));
+    glm::mat4 translateObject = glm::translate(glm::vec3(BackgroundObject[current].x, BackgroundObject[current].y, 0.0f));
     Matrices.model *= translateObject;
     MVP = VP * Matrices.model;
 
     glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
-    draw3DObject(Brick[current].object);
+    draw3DObject(BackgroundObject[current].object);
+  }
+
+  for (auto i = Brick.begin(); i != Brick.end(); i++) {
+    Matrices.model = glm::mat4(1.0f);
+    glm::mat4 translateObject = glm::translate(glm::vec3((*i).x, (*i).y, 0.0f));
+    Matrices.model *= translateObject;
+    MVP = VP * Matrices.model;
+
+    glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+    draw3DObject((*i).object);
 
   }
 
@@ -225,21 +235,14 @@ void draw () {
     draw3DObject(Basket[current].object);
   }
 
-  for (auto i = BackgroundObject.begin(); i != BackgroundObject.end(); i++) {
-    string current = i->first;
-    Matrices.model = glm::mat4(1.0f);
-    glm::mat4 translateObject = glm::translate(glm::vec3(BackgroundObject[current].x, BackgroundObject[current].y, 0.0f));
-    Matrices.model *= translateObject;
-    MVP = VP * Matrices.model;
-
-    glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
-    draw3DObject(BackgroundObject[current].object);
-  }
 
   float translation_increments = 0.01;
 
   for (auto i = Brick.begin(); i != Brick.end(); i++) {
-    Brick[i->first].y = Brick[i->first].y - translation_increments;
+    if ((*i).y < -5) {
+      Brick.erase(i);
+      brickEngine(1);
+    } else (*i).y = (*i).y - translation_increments;
   }
 
   Basket["left"].x -= (Basket["left"].left_translation_status) ? 0.01 : 0;
@@ -344,9 +347,9 @@ void initGL (GLFWwindow* window, int width, int height) {
   // Create the models
   //  createTriangle (); // Generate the VAO, VBOs, vertices data & copy into the array buffer
   //  createRectangle ();
-  brickEngine(1000);
-  basketEngine();
   backgroundObjectsEngine();
+  brickEngine(10);
+  basketEngine();
   // Create and compile our GLSL program from the shaders
   programID = LoadShaders( "Sample_GL.vert", "Sample_GL.frag" );
   // Get a handle for our "MVP" uniform
