@@ -84,8 +84,12 @@ void createBricks (int id, float x, float y, COLOR a_color, COLOR b_color, COLOR
 
 void brickEngine(int quantity) {
   for (int i = 0; i < quantity; i++) {
-    float x = -2 + rand()%6;
+    auto value = rand();
+    float x = -2 + value%6;
     float y = 5.5 + i;
-    createBricks(i, x, y, coingold, coingold, coingold, coingold, 0.1, 0.2);
+    COLOR color;
+    if (value % 3 < 2) color = (value % 3) ? red : black;
+    else color = darkgreen;
+    createBricks(i, x, y, color, color, color, color, 0.1, 0.2);
   }
 }

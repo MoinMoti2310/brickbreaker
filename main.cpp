@@ -11,6 +11,7 @@ GLuint programID;
 
 map <int, entity> Brick;
 map <string, entity> Basket;
+map <string, entity> BackgroundObject;
 
 float camera_rotation_angle = 90;
 

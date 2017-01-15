@@ -60,6 +60,7 @@ typedef struct entity {
   string id;
   COLOR color;
   float x, y;
+  float radius;
   VAO *object;
   int status;
   float height, width;
@@ -68,6 +69,7 @@ typedef struct entity {
 
 extern map <int, entity> Brick;
 extern map <string, entity> Basket;
+extern map <string, entity> BackgroundObject;
 
 extern struct GLMatrices Matrices;
 
