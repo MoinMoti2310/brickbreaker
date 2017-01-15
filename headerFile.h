@@ -60,6 +60,7 @@ extern COLOR score;
 
 typedef struct entity {
   string id;
+  int type;
   COLOR color;
   float x, y;
   float radius;
@@ -119,6 +120,7 @@ void createBaskets(string id, float x, float y, float w, float h, COLOR a_color,
 void basketEngine();
 void createCircle (string id, COLOR color, float x, float y, float r, int parts, string component);
 void backgroundObjectsEngine();
+void checkCollisionBrick();
 
 
 #endif

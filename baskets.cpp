@@ -37,6 +37,6 @@ void createBaskets(string id, float x, float y, float w, float h, COLOR a_color,
 }
 
 void basketEngine() {
-  createBaskets("left", -2.0, -3.5, 0.8, 0.4, red, red, red, red);
-  createBaskets("right", 2.0, -3.5, 0.8, 0.4, darkgreen, darkgreen, darkgreen, darkgreen);
+  createBaskets("red", -2.0, -3.5, 0.8, 0.4, red, red, red, red);
+  createBaskets("green", 2.0, -3.5, 0.8, 0.4, darkgreen, darkgreen, darkgreen, darkgreen);
 }

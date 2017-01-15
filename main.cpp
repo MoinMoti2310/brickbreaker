@@ -79,16 +79,16 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods) 
       // do something ..
       break;
       case GLFW_KEY_A:
-      Basket["left"].left_translation_status = 0;
+      Basket["red"].left_translation_status = 0;
       break;
       case GLFW_KEY_D:
-      Basket["left"].right_translation_status = 0;
+      Basket["red"].right_translation_status = 0;
       break;
       case GLFW_KEY_J:
-      Basket["right"].left_translation_status = 0;
+      Basket["green"].left_translation_status = 0;
       break;
       case GLFW_KEY_L:
-      Basket["right"].right_translation_status = 0;
+      Basket["green"].right_translation_status = 0;
       break;
       default:
       break;
@@ -99,16 +99,16 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods) 
       quit(window);
       break;
       case GLFW_KEY_A:
-      Basket["left"].left_translation_status = 1;
+      Basket["red"].left_translation_status = 1;
       break;
       case GLFW_KEY_D:
-      Basket["left"].right_translation_status = 1;
+      Basket["red"].right_translation_status = 1;
       break;
       case GLFW_KEY_J:
-      Basket["right"].left_translation_status = 1;
+      Basket["green"].left_translation_status = 1;
       break;
       case GLFW_KEY_L:
-      Basket["right"].right_translation_status = 1;
+      Basket["green"].right_translation_status = 1;
       break;
       default:
       break;
@@ -236,7 +236,7 @@ void draw () {
   }
 
 
-  float translation_increments = 0.01;
+  float translation_increments = 0.03;
 
   for (auto i = Brick.begin(); i != Brick.end(); i++) {
     if ((*i).y < -5) {
@@ -245,10 +245,10 @@ void draw () {
     } else (*i).y = (*i).y - translation_increments;
   }
 
-  Basket["left"].x -= (Basket["left"].left_translation_status) ? 0.01 : 0;
-  Basket["right"].x -= (Basket["right"].left_translation_status) ? 0.01 : 0;
-  Basket["left"].x += (Basket["left"].right_translation_status) ? 0.01 : 0;
-  Basket["right"].x += (Basket["right"].right_translation_status) ? 0.01 : 0;
+  Basket["red"].x -= (Basket["red"].left_translation_status) ? 0.01 : 0;
+  Basket["green"].x -= (Basket["green"].left_translation_status) ? 0.01 : 0;
+  Basket["red"].x += (Basket["red"].right_translation_status) ? 0.01 : 0;
+  Basket["green"].x += (Basket["green"].right_translation_status) ? 0.01 : 0;
 
   // Load identity to model matrix
   /*  Matrices.model = glm::mat4(1.0f);
@@ -388,6 +388,8 @@ int main (int argc, char** argv) {
 
     // OpenGL Draw commands
     draw();
+
+    checkCollisionBrick();
 
     // Swap Frame Buffer in double buffering
     glfwSwapBuffers(window);
