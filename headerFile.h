@@ -87,6 +87,9 @@ extern struct GLMatrices Matrices;
 
 extern GLuint programID;
 extern float camera_rotation_angle;
+extern float current_laser_time;
+extern float prev_laser_time;
+extern double x_mouse, y_mouse;
 
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path);
 static void error_callback(int error, const char* description) {

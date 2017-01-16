@@ -17,6 +17,9 @@ vector <entity> Laser;
 vector <entity> Mirror;
 
 float camera_rotation_angle = 90;
+float current_laser_time = glfwGetTime();
+float prev_laser_time = 0;
+double x_mouse, y_mouse;
 
 COLOR grey = {168.0/255.0,168.0/255.0,168.0/255.0};
 COLOR silver = {192.0/255.0,192.0/255.0,192.0/255.0};
@@ -66,16 +69,16 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods) 
       case GLFW_KEY_X:
       // do something ..
       break;
-      case GLFW_KEY_A:
+      case GLFW_KEY_LEFT_CONTROL:
       Basket["red"].left_translation_status = 0;
       break;
-      case GLFW_KEY_D:
+      case GLFW_KEY_RIGHT_CONTROL:
       Basket["red"].right_translation_status = 0;
       break;
-      case GLFW_KEY_J:
+      case GLFW_KEY_LEFT_ALT:
       Basket["green"].left_translation_status = 0;
       break;
-      case GLFW_KEY_L:
+      case GLFW_KEY_RIGHT_ALT:
       Basket["green"].right_translation_status = 0;
       break;
       case GLFW_KEY_UP:
@@ -91,16 +94,16 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods) 
       case GLFW_KEY_ESCAPE:
       quit(window);
       break;
-      case GLFW_KEY_A:
+      case GLFW_KEY_LEFT_CONTROL:
       Basket["red"].left_translation_status = 1;
       break;
-      case GLFW_KEY_D:
+      case GLFW_KEY_RIGHT_CONTROL:
       Basket["red"].right_translation_status = 1;
       break;
-      case GLFW_KEY_J:
+      case GLFW_KEY_LEFT_ALT:
       Basket["green"].left_translation_status = 1;
       break;
-      case GLFW_KEY_L:
+      case GLFW_KEY_RIGHT_ALT:
       Basket["green"].right_translation_status = 1;
       break;
       case GLFW_KEY_UP:
@@ -134,13 +137,19 @@ void keyboardChar (GLFWwindow* window, unsigned int key) {
 void mouseButton (GLFWwindow* window, int button, int action, int mods) {
   switch (button) {
     case GLFW_MOUSE_BUTTON_LEFT:
-    if (action == GLFW_RELEASE)
-    //    triangle_rot_dir *= -1;
+    if (action == GLFW_PRESS) {
+      glfwGetCursorPos(window, &x_mouse, &y_mouse);
+      x_mouse -= 300;
+      y_mouse -= 300;
+      x_mouse = x_mouse*4.0/300.0;
+      y_mouse = -y_mouse*4.0/300.0;
+      LaserObject["gun"].angle = atan((LaserObject["gun"].y - y_mouse)/(LaserObject["gun"].x - x_mouse))*180.0f/M_PI;
+    }
+    if (action == GLFW_RELEASE) laserEngine();
     break;
     case GLFW_MOUSE_BUTTON_RIGHT:
-    if (action == GLFW_RELEASE) {
-      //      rectangle_rot_dir *= -1;
-    }
+    if (action == GLFW_PRESS)
+    if (action == GLFW_RELEASE)
     break;
     default:
     break;

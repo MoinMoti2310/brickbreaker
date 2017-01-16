@@ -83,7 +83,11 @@ void laserGunEngine() {
 }
 
 void laserEngine() {
-  float x = LaserObject["gun"].x + (LaserObject["gun"].width/2.0)*cos(LaserObject["gun"].angle*M_PI/180.0f);
-  float y = LaserObject["gun"].y + (LaserObject["gun"].height/2.0)*sin(LaserObject["gun"].angle*M_PI/180.0f);
-  createLaser(x, y, 0.2, 0.05, coingold);
+  current_laser_time = glfwGetTime();
+  if (current_laser_time - prev_laser_time > 1) {
+    float x = LaserObject["gun"].x + (LaserObject["gun"].width/2.0)*cos(LaserObject["gun"].angle*M_PI/180.0f);
+    float y = LaserObject["gun"].y + (LaserObject["gun"].height*2.5)*sin(LaserObject["gun"].angle*M_PI/180.0f);
+    createLaser(x, y, 0.2, 0.05, coingold);
+    prev_laser_time = glfwGetTime();
+  }
 }
