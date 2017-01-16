@@ -13,6 +13,7 @@ vector <entity> Brick;
 map <string, entity> Basket;
 map <string, entity> BackgroundObject;
 map <string, entity> LaserObject;
+vector <entity> Laser;
 
 float camera_rotation_angle = 90;
 
@@ -91,6 +92,11 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods) 
       case GLFW_KEY_L:
       Basket["green"].right_translation_status = 0;
       break;
+      case GLFW_KEY_UP:
+      LaserObject["gun"].rotation_dir = 0;
+      case GLFW_KEY_DOWN:
+      LaserObject["gun"].rotation_dir = 0;
+      break;
       default:
       break;
     }
@@ -110,6 +116,15 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods) 
       break;
       case GLFW_KEY_L:
       Basket["green"].right_translation_status = 1;
+      break;
+      case GLFW_KEY_UP:
+      LaserObject["gun"].rotation_dir = 1;
+      break;
+      case GLFW_KEY_DOWN:
+      LaserObject["gun"].rotation_dir = -1;
+      break;
+      case GLFW_KEY_SPACE:
+      laserEngine();
       break;
       default:
       break;
@@ -218,22 +233,18 @@ void draw () {
     string current = i->first;
     Matrices.model = glm::mat4(1.0f);
     glm::mat4 translateObject = glm::translate(glm::vec3(LaserObject[current].x, LaserObject[current].y, 0.0f));
-    Matrices.model *= translateObject;
+    glm::mat4 rotateObject = glm::rotate((float)(LaserObject[current].angle*M_PI/180.0f), glm::vec3(0,0,1));
+    glm::mat4 objectTransform = translateObject*rotateObject;
+    Matrices.model *= objectTransform;
     MVP = VP * Matrices.model;
 
     glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
     draw3DObject(LaserObject[current].object);
   }
 
-  for (auto i = Brick.begin(); i != Brick.end(); i++) {
-    Matrices.model = glm::mat4(1.0f);
-    glm::mat4 translateObject = glm::translate(glm::vec3((*i).x, (*i).y, 0.0f));
-    Matrices.model *= translateObject;
-    MVP = VP * Matrices.model;
-
-    glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
-    draw3DObject((*i).object);
-
+  for (auto i = LaserObject.begin(); i != LaserObject.end(); i++) {
+    string current = i->first;
+    LaserObject[current].angle += LaserObject[current].rotation_speed*LaserObject[current].rotation_dir;
   }
 
   for (auto i = Basket.begin(); i != Basket.end(); i++) {
@@ -247,6 +258,21 @@ void draw () {
     draw3DObject(Basket[current].object);
   }
 
+  Basket["red"].x -= (Basket["red"].left_translation_status) ? 0.01 : 0;
+  Basket["green"].x -= (Basket["green"].left_translation_status) ? 0.01 : 0;
+  Basket["red"].x += (Basket["red"].right_translation_status) ? 0.01 : 0;
+  Basket["green"].x += (Basket["green"].right_translation_status) ? 0.01 : 0;
+
+  for (auto i = Brick.begin(); i != Brick.end(); i++) {
+    Matrices.model = glm::mat4(1.0f);
+    glm::mat4 translateObject = glm::translate(glm::vec3((*i).x, (*i).y, 0.0f));
+    Matrices.model *= translateObject;
+    MVP = VP * Matrices.model;
+
+    glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+    draw3DObject((*i).object);
+
+  }
 
   float translation_increments = 0.03;
 
@@ -257,10 +283,29 @@ void draw () {
     } else (*i).y = (*i).y - translation_increments;
   }
 
-  Basket["red"].x -= (Basket["red"].left_translation_status) ? 0.01 : 0;
-  Basket["green"].x -= (Basket["green"].left_translation_status) ? 0.01 : 0;
-  Basket["red"].x += (Basket["red"].right_translation_status) ? 0.01 : 0;
-  Basket["green"].x += (Basket["green"].right_translation_status) ? 0.01 : 0;
+  for (auto i = Laser.begin(); i != Laser.end(); i++) {
+    if ((*i).status) {
+      Matrices.model = glm::mat4(1.0f);
+      glm::mat4 translateObject = glm::translate(glm::vec3((*i).x, (*i).y, 0.0f));
+      glm::mat4 rotateObject = glm::rotate((float)((*i).angle*M_PI/180.0f), glm::vec3(0,0,1));
+      glm::mat4 objectTransform = translateObject*rotateObject;
+      Matrices.model *= objectTransform;
+      MVP = VP * Matrices.model;
+    }
+
+    glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+    draw3DObject((*i).object);
+  }
+
+  for (auto i = Laser.begin(); i != Laser.end(); i++) {
+    if ((*i).status) {
+      if ((*i).y < -3 || (*i).y > 5 || (*i).x > 5 || (*i).x < -4) (*i).status = 0;
+      else {
+        (*i).x += ((*i).xspeed)*cos((*i).angle*M_PI/180.0f);
+        (*i).y += ((*i).yspeed)*sin((*i).angle*M_PI/180.0f);
+      }
+    }
+  }
 
   // Load identity to model matrix
   /*  Matrices.model = glm::mat4(1.0f);

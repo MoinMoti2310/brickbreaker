@@ -15,7 +15,7 @@ bricks.o: bricks.cpp glad.c
 	g++ -c bricks.cpp glad.c $(FLAGS)
 
 baskets.o: baskets.cpp glad.c
-	g++ -c  baskets.cpp glad.c $(FLAGS)
+	g++ -c baskets.cpp glad.c $(FLAGS)
 
 background.o: background.cpp glad.c
 	g++ -c background.cpp glad.c $(FLAGS)

@@ -64,6 +64,9 @@ typedef struct entity {
   COLOR color;
   float x, y;
   float radius;
+  float angle;
+  float rotation_speed;
+  int rotation_dir;
   VAO *object;
   int status;
   float height, width;
@@ -77,27 +80,13 @@ extern vector <entity> Brick;
 extern map <string, entity> Basket;
 extern map <string, entity> BackgroundObject;
 extern map <string, entity> LaserObject;
+extern vector <entity> Laser;
 
 extern struct GLMatrices Matrices;
 
 extern GLuint programID;
 extern float camera_rotation_angle;
 
-/*
-extern float triangle_rot_dir;
-extern float rectangle_rot_dir;
-extern bool triangle_rot_status;
-extern bool rectangle_rot_status;
-extern bool triangle_tra_status;
-extern bool rectangle_tra_status;
-
-extern VAO *triangle, *rectangle;
-
-extern float rectangle_rotation;
-extern float rectangle_translation;
-extern float triangle_rotation;
-extern float triangle_translation;
-*/
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path);
 static void error_callback(int error, const char* description) {
   fprintf(stderr, "Error: %s\n", description);
@@ -124,6 +113,8 @@ void backgroundObjectsEngine();
 void checkCollisionBrick();
 void createGun(float x, float y, float w, float h, float angle, COLOR color);
 void laserGunEngine();
+void createLaser();
+void laserEngine();
 
 
 #endif

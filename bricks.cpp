@@ -83,6 +83,8 @@ void createBricks (int type, int value, float x, float y, COLOR color, float w, 
   brick.object = object;
   brick.width = 2*w;
   brick.height = 2*h;
+  brick.yspeed = 0.03;
+  brick.xspeed = 0;
   brick.value = value;
   Brick.push_back(brick);
 }
@@ -125,8 +127,8 @@ void checkCollisionBrick() {
       min_h_diff = (i->height + Basket["red"].height)/2.0;
       min_w_diff = (i->width + Basket["red"].width)/2.0;
       if (height_diff < min_h_diff && width_diff < min_w_diff) {
-        Brick.erase(i);
         brickEngine(1);
+        Brick.erase(i);
       }
     } else if (i->type == 2) {
       height_diff = abs(i->y - Basket["green"].y);
@@ -134,8 +136,23 @@ void checkCollisionBrick() {
       min_h_diff = (i->height + Basket["green"].height)/2.0;
       min_w_diff = (i->width + Basket["green"].width)/2.0;
       if (height_diff < min_h_diff && width_diff < min_w_diff) {
-        Brick.erase(i);
         brickEngine(1);
+        Brick.erase(i);
+      }
+    }
+  }
+  for (auto i = Brick.begin(); i != Brick.end(); i++) {
+    for (auto j = Laser.begin(); j != Laser.end(); j++) {
+      if ((*j).status) {
+        height_diff = abs(i->y - j->y);
+        width_diff = abs(i->x - j->x);
+        min_h_diff = (i->height + j->height)/2.0;
+        min_w_diff = (i->width + j->width)/2.0;
+        if (height_diff < min_h_diff && width_diff < min_w_diff) {
+          brickEngine(1);
+          Brick.erase(i);
+          (*j).status = 0;
+        }
       }
     }
   }
