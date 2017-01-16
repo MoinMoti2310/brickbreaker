@@ -105,7 +105,7 @@ void mouseButton (GLFWwindow* window, int button, int action, int mods);
 void reshapeWindow (GLFWwindow* window, int width, int height);
 void createTriangle ();
 void createRectangle ();
-void draw ();
+void draw (GLFWwindow* window);
 GLFWwindow* initGLFW (int width, int height);
 void initGL (GLFWwindow* window, int width, int height);
 void createBricks (int id, float x, float y, COLOR a_color, COLOR b_color, COLOR c_color, COLOR d_color, float w, float h);
@@ -122,6 +122,7 @@ void laserEngine();
 void mirrorEngine();
 void createMirror(float x, float y, float w, float h, COLOR color, float angle);
 void checkReflection();
+void dragBasket();
 
 
 #endif

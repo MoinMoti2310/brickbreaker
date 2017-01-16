@@ -143,9 +143,17 @@ void mouseButton (GLFWwindow* window, int button, int action, int mods) {
       y_mouse -= 300;
       x_mouse = x_mouse*4.0/300.0;
       y_mouse = -y_mouse*4.0/300.0;
-      LaserObject["gun"].angle = atan((LaserObject["gun"].y - y_mouse)/(LaserObject["gun"].x - x_mouse))*180.0f/M_PI;
+//      cout << x_mouse << "|" << y_mouse << endl;
+      if (y_mouse > -3.0) LaserObject["gun"].angle = atan((LaserObject["gun"].y - y_mouse)/(LaserObject["gun"].x - x_mouse))*180.0f/M_PI;
+      else dragBasket();
     }
-    if (action == GLFW_RELEASE) laserEngine();
+    if (action == GLFW_RELEASE) {
+      if (y_mouse > -3.0) laserEngine();
+      else {
+        Basket["red"].status = 0;
+        Basket["green"].status = 0;
+      }
+    }
     break;
     case GLFW_MOUSE_BUTTON_RIGHT:
     if (action == GLFW_PRESS)
@@ -184,7 +192,7 @@ void reshapeWindow (GLFWwindow* window, int width, int height) {
 
 /* Render the scene with openGL */
 /* Edit this function according to your assignment */
-void draw () {
+void draw (GLFWwindow* window) {
   // clear the color and depth in the frame buffer
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -258,6 +266,26 @@ void draw () {
   Basket["red"].x += (Basket["red"].right_translation_status) ? 0.01 : 0;
   Basket["green"].x += (Basket["green"].right_translation_status) ? 0.01 : 0;
 
+  if (Basket["red"].status) {
+    float width_diff_red = x_mouse - Basket["red"].x;
+    glfwGetCursorPos(window, &x_mouse, &y_mouse);
+    x_mouse -= 300;
+    y_mouse -= 300;
+    x_mouse = x_mouse*4.0/300.0;
+    y_mouse = -y_mouse*4.0/300.0;
+    Basket["red"].x = x_mouse - width_diff_red;
+  }
+
+  if (Basket["green"].status) {
+    float width_diff_green = x_mouse - Basket["green"].x;
+    glfwGetCursorPos(window, &x_mouse, &y_mouse);
+    x_mouse -= 300;
+    y_mouse -= 300;
+    x_mouse = x_mouse*4.0/300.0;
+    y_mouse = -y_mouse*4.0/300.0;
+    Basket["green"].x = x_mouse - width_diff_green;
+  }
+
   for (auto i = Mirror.begin(); i != Mirror.end(); i++) {
     Matrices.model = glm::mat4(1.0f);
     glm::mat4 translateObject = glm::translate(glm::vec3((*i).x, (*i).y, 0.0f));
@@ -312,47 +340,6 @@ void draw () {
     }
   }
 
-  // Load identity to model matrix
-  /*  Matrices.model = glm::mat4(1.0f);
-
-  //  Render your scene
-
-  glm::mat4 translateTriangle = glm::translate (glm::vec3(-2.0f, 0.0f, 0.0f)); // glTranslatef
-  glm::mat4 rotateTriangle = glm::rotate((float)(triangle_rotation*M_PI/180.0f), glm::vec3(0,0,1));  // rotate about vector (1,0,0)
-  glm::mat4 triangleTransform = translateTriangle * rotateTriangle;
-  Matrices.model *= triangleTransform;
-  MVP = VP * Matrices.model; // MVP = p * V * M
-
-  //  Don't change unless you are sure!!
-  glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
-
-  // draw3DObject draws the VAO given to it using current MVP matrix
-  draw3DObject(triangle);
-
-  // Pop matrix to undo transformations till last push matrix instead of recomputing model matrix
-  // glPopMatrix ();
-  Matrices.model = glm::mat4(1.0f);
-
-  glm::mat4 translateRectangle = glm::translate (glm::vec3(2, rectangle_translation, 0));        // glTranslatef
-  glm::mat4 rotateRectangle = glm::rotate((float)(rectangle_rotation*M_PI/180.0f), glm::vec3(0,0,1)); // rotate about vector (-1,1,1)
-  Matrices.model *= (translateRectangle * rotateRectangle);
-  MVP = VP * Matrices.model;
-  glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
-
-  // draw3DObject draws the VAO given to it using current MVP matrix
-  draw3DObject(rectangle);
-
-  // Increment angles
-  float increments = 1;
-
-  //camera_rotation_angle++; // Simulating camera rotation
-  triangle_rotation = triangle_rotation + increments*triangle_rot_dir*triangle_rot_status;
-  rectangle_rotation = rectangle_rotation + increments*rectangle_rot_dir*rectangle_rot_status;
-
-  float translation_increments = 0.01;
-  // translation
-  rectangle_translation = rectangle_translation - translation_increments*rectangle_tra_status;
-  */
 }
 
 /* Initialise glfw window, I/O callbacks and the renderer to use */
@@ -451,7 +438,7 @@ int main (int argc, char** argv) {
   while (!glfwWindowShouldClose(window)) {
 
     // OpenGL Draw commands
-    draw();
+    draw(window);
 
     checkCollisionBrick();
     checkReflection();

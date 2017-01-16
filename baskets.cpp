@@ -33,10 +33,20 @@ void createBaskets(string id, float x, float y, float w, float h, COLOR a_color,
   basket.height = 2*h;
   basket.left_translation_status = 0;
   basket.right_translation_status = 0;
+  basket.status = 0;
   Basket[id] = basket;
 }
 
 void basketEngine() {
   createBaskets("red", -2.0, -3.5, 0.8, 0.4, red, red, red, red);
   createBaskets("green", 2.0, -3.5, 0.8, 0.4, darkgreen, darkgreen, darkgreen, darkgreen);
+}
+
+void dragBasket() {
+  float width_diff_red = x_mouse - Basket["red"].x;
+  float height_diff_red = y_mouse - Basket["red"].y;
+  float width_diff_green = x_mouse - Basket["green"].x;
+  float height_diff_green = y_mouse - Basket["green"].y;
+  if (abs(width_diff_red) < Basket["red"].width/2.0 && abs(height_diff_red) < Basket["red"].height/2.0) Basket["red"].status = 1;
+  else if (abs(width_diff_green) < Basket["green"].width/2.0 && abs(height_diff_green) < Basket["green"].height/2.0) Basket["green"].status = 1;
 }
