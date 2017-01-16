@@ -1,55 +1,5 @@
 #include "headerFile.h"
 
-
-/*
-// Creates the triangle object used in this sample code
-void createTriangle () {
-//   ONLY vertices between the bounds specified in glm::ortho will be visible on screen
-
-//  Define vertex array as used in glBegin (GL_TRIANGLES)
-static const GLfloat vertex_buffer_data [] = {
-0, 1,0, // vertex 0
--1,-1,0, // vertex 1
-1,-1,0, // vertex 2
-};
-
-static const GLfloat color_buffer_data [] = {
-1,0,0, // color 0
-0,1,0, // color 1
-0,0,1, // color 2
-};
-
-// create3DObject creates and returns a handle to a VAO that can be used later
-triangle = create3DObject(GL_TRIANGLES, 3, vertex_buffer_data, color_buffer_data, GL_LINE);
-}
-
-// Creates the rectangle object used in this sample code
-void createRectangle () {
-// GL3 accepts only Triangles. Quads are not supported
-static const GLfloat vertex_buffer_data [] = {
--1.2,-1,0, // vertex 1
--1,-1,0, // vertex 2
--1, 1,0, // vertex 3
-
--1, 1,0, // vertex 3
--1.2, 1,0, // vertex 4
--1.2,-1,0  // vertex 1
-};
-
-static const GLfloat color_buffer_data [] = {
-1,0,0, // color 1
-0,0,1, // color 2
-0,1,0, // color 3
-
-0,1,0, // color 3
-0.3,0.3,0.3, // color 4
-1,0,0  // color 1
-};
-
-// create3DObject creates and returns a handle to a VAO that can be used later
-rectangle = create3DObject(GL_TRIANGLES, 6, vertex_buffer_data, color_buffer_data, GL_FILL);
-}
-*/
 void createBricks (int type, int value, float x, float y, COLOR color, float w, float h) {
   w = w/2;
   h = h/2;

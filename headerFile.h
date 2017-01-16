@@ -81,6 +81,7 @@ extern map <string, entity> Basket;
 extern map <string, entity> BackgroundObject;
 extern map <string, entity> LaserObject;
 extern vector <entity> Laser;
+extern vector <entity> Mirror;
 
 extern struct GLMatrices Matrices;
 
@@ -115,6 +116,9 @@ void createGun(float x, float y, float w, float h, float angle, COLOR color);
 void laserGunEngine();
 void createLaser();
 void laserEngine();
+void mirrorEngine();
+void createMirror(float x, float y, float w, float h, COLOR color, float angle);
+void checkReflection();
 
 
 #endif

@@ -14,6 +14,7 @@ map <string, entity> Basket;
 map <string, entity> BackgroundObject;
 map <string, entity> LaserObject;
 vector <entity> Laser;
+vector <entity> Mirror;
 
 float camera_rotation_angle = 90;
 
@@ -45,21 +46,6 @@ COLOR darkpink = {255/255.0,51/255.0,119/255.0};
 COLOR white = {255/255.0,255/255.0,255/255.0};
 COLOR score = {117/255.0,78/255.0,40/255.0};
 
-/*
-float triangle_rot_dir = 1;
-float rectangle_rot_dir = 1;
-bool triangle_rot_status = true;
-bool rectangle_rot_status = false;
-bool triangle_tra_status = false;
-bool rectangle_tra_status = true;
-
-VAO *triangle, *rectangle;
-
-float rectangle_rotation = 0;
-float rectangle_translation = 2;
-float triangle_rotation = 0;
-float triangle_translation = 0;
-*/
 /**************************
 * Customizable functions *
 **************************/
@@ -263,6 +249,17 @@ void draw () {
   Basket["red"].x += (Basket["red"].right_translation_status) ? 0.01 : 0;
   Basket["green"].x += (Basket["green"].right_translation_status) ? 0.01 : 0;
 
+  for (auto i = Mirror.begin(); i != Mirror.end(); i++) {
+    Matrices.model = glm::mat4(1.0f);
+    glm::mat4 translateObject = glm::translate(glm::vec3((*i).x, (*i).y, 0.0f));
+    glm::mat4 rotateObject = glm::rotate((float)((*i).angle*M_PI/180.0f), glm::vec3(0,0,1));
+    Matrices.model *= translateObject*rotateObject;
+    MVP = VP * Matrices.model;
+
+    glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+    draw3DObject((*i).object);
+  }
+
   for (auto i = Brick.begin(); i != Brick.end(); i++) {
     Matrices.model = glm::mat4(1.0f);
     glm::mat4 translateObject = glm::translate(glm::vec3((*i).x, (*i).y, 0.0f));
@@ -271,7 +268,6 @@ void draw () {
 
     glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
     draw3DObject((*i).object);
-
   }
 
   float translation_increments = 0.03;
@@ -406,8 +402,9 @@ void initGL (GLFWwindow* window, int width, int height) {
   //  createRectangle ();
   backgroundObjectsEngine();
   laserGunEngine();
-  brickEngine(10);
   basketEngine();
+  mirrorEngine();
+  brickEngine(10);
   // Create and compile our GLSL program from the shaders
   programID = LoadShaders( "Sample_GL.vert", "Sample_GL.frag" );
   // Get a handle for our "MVP" uniform
@@ -417,7 +414,7 @@ void initGL (GLFWwindow* window, int width, int height) {
   reshapeWindow (window, width, height);
 
   // Background color of the scene
-  glClearColor (204/255.0f, 255/255.0f, 255/255.0f, 0.0f); // R, G, B, A
+  glClearColor (skyblue.r, skyblue.g, skyblue.b, 0.0f); // R, G, B, A
   glClearDepth (1.0f);
 
   glEnable (GL_DEPTH_TEST);
@@ -448,6 +445,7 @@ int main (int argc, char** argv) {
     draw();
 
     checkCollisionBrick();
+    checkReflection();
 
     // Swap Frame Buffer in double buffering
     glfwSwapBuffers(window);
