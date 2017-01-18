@@ -84,10 +84,26 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods) 
       case GLFW_KEY_RIGHT_ALT:
       Basket["green"].right_translation_status = 0;
       break;
-      case GLFW_KEY_UP:
+      case GLFW_KEY_PAGE_UP:
       LaserObject["gun"].rotation_dir = 0;
+      case GLFW_KEY_PAGE_DOWN:
+      LaserObject["gun"].rotation_dir = 0;
+      break;
+      case GLFW_KEY_LEFT:
+      x_change -= 0.3;
+      check_pan();
+      break;
+      case GLFW_KEY_RIGHT:
+      x_change += 0.3;
+      check_pan();
+      break;
       case GLFW_KEY_DOWN:
-      LaserObject["gun"].rotation_dir = 0;
+      y_change -= 0.3;
+      check_pan();
+      break;
+      case GLFW_KEY_UP:
+      y_change += 0.3;
+      check_pan();
       break;
       default:
       break;
@@ -109,10 +125,10 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods) 
       case GLFW_KEY_RIGHT_ALT:
       Basket["green"].right_translation_status = 1;
       break;
-      case GLFW_KEY_UP:
+      case GLFW_KEY_PAGE_UP:
       LaserObject["gun"].rotation_dir = 1;
       break;
-      case GLFW_KEY_DOWN:
+      case GLFW_KEY_PAGE_DOWN:
       LaserObject["gun"].rotation_dir = -1;
       break;
       case GLFW_KEY_SPACE:
@@ -226,12 +242,15 @@ void reshapeWindow (GLFWwindow* window, int width, int height) {
   // Matrices.projection = glm::perspective (fov, (GLfloat) fbwidth / (GLfloat) fbheight, 0.1f, 500.0f);
 
   // Ortho projection for 2D views
-  Matrices.projection = glm::ortho(-4.0f, 4.0f, -4.0f, 4.0f, 0.1f, 500.0f);
+  Matrices.projection = glm::ortho(-4.0f/zoom_camera+x_change, 4.0f/zoom_camera+x_change, -4.0f/zoom_camera+y_change, 4.0f/zoom_camera+y_change, 0.1f, 500.0f);
 }
 
 /* Render the scene with openGL */
 /* Edit this function according to your assignment */
 void draw (GLFWwindow* window) {
+
+  Matrices.projection = glm::ortho(-4.0f/zoom_camera+x_change, 4.0f/zoom_camera+x_change, -4.0f/zoom_camera+y_change, 4.0f/zoom_camera+y_change, 0.1f, 500.0f);
+
   // clear the color and depth in the frame buffer
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
