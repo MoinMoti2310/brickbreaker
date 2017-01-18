@@ -123,6 +123,8 @@ void mirrorEngine();
 void createMirror(float x, float y, float w, float h, COLOR color, float angle);
 void checkReflection();
 void dragBasket();
+void mousescroll(GLFWwindow* window, double xoffset, double yoffset);
+void check_pan();
 
 
 #endif

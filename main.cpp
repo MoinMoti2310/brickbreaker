@@ -20,6 +20,9 @@ float camera_rotation_angle = 90;
 float current_laser_time = glfwGetTime();
 float prev_laser_time = 0;
 double x_mouse, y_mouse;
+float x_change = 0;
+float y_change = 0;
+float zoom_camera = 1;
 
 COLOR grey = {168.0/255.0,168.0/255.0,168.0/255.0};
 COLOR silver = {192.0/255.0,192.0/255.0,192.0/255.0};
@@ -131,6 +134,42 @@ void keyboardChar (GLFWwindow* window, unsigned int key) {
     default:
     break;
   }
+}
+
+void mousescroll(GLFWwindow* window, double xoffset, double yoffset) {
+    if (yoffset==-1) {
+        zoom_camera /= 1.1; //make it bigger than current size
+    }
+    else if(yoffset==1){
+        zoom_camera *= 1.1; //make it bigger than current size
+    }
+    if (zoom_camera<=1) {
+        zoom_camera = 1;
+    }
+    if (zoom_camera>=4) {
+        zoom_camera=4;
+    }
+    if(x_change-4.0f/zoom_camera<-4)
+        x_change=-4+4.0f/zoom_camera;
+    else if(x_change+4.0f/zoom_camera>4)
+        x_change=4-4.0f/zoom_camera;
+    if(y_change-4.0f/zoom_camera<-4)
+        y_change=-4+4.0f/zoom_camera;
+    else if(y_change+4.0f/zoom_camera>4)
+        y_change=4-4.0f/zoom_camera;
+    Matrices.projection = glm::ortho((float)(-4.0f/zoom_camera+x_change), (float)(4.0f/zoom_camera+x_change), (float)(-4.0f/zoom_camera+y_change), (float)(4.0f/zoom_camera+y_change), 0.1f, 500.0f);
+}
+
+//Ensure the panning does not go out of the map
+void check_pan() {
+    if(x_change-4.0f/zoom_camera<-4)
+        x_change=-4+4.0f/zoom_camera;
+    else if(x_change+4.0f/zoom_camera>4)
+        x_change=4-4.0f/zoom_camera;
+    if(y_change-4.0f/zoom_camera<-4)
+        y_change=-4+4.0f/zoom_camera;
+    else if(y_change+4.0f/zoom_camera>4)
+        y_change=4-4.0f/zoom_camera;
 }
 
 /* Executed when a mouse button is pressed/released */
@@ -385,6 +424,7 @@ GLFWwindow* initGLFW (int width, int height) {
 
   /* Register function to handle mouse click */
   glfwSetMouseButtonCallback(window, mouseButton);  // mouse button clicks
+  glfwSetScrollCallback(window, mousescroll);
 
   return window;
 }
