@@ -125,6 +125,6 @@ void checkReflection();
 void dragBasket();
 void mousescroll(GLFWwindow* window, double xoffset, double yoffset);
 void check_pan();
-
+void createHolder (float x, float y, float r, int parts, COLOR color);
 
 #endif
