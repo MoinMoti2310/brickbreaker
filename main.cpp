@@ -301,11 +301,23 @@ void draw (GLFWwindow* window) {
     string current = i->first;
     Matrices.model = glm::mat4(1.0f);
     glm::mat4 translateObject = glm::translate(glm::vec3(BackgroundObject[current].x, BackgroundObject[current].y, 0.0f));
-    Matrices.model *= translateObject;
+    glm::mat4 rotateObject = glm::rotate((float)(BackgroundObject[current].angle*M_PI/180.0f), glm::vec3(0,0,1));
+    glm::mat4 objectTransform = translateObject*rotateObject;
+    Matrices.model *= objectTransform;
     MVP = VP * Matrices.model;
 
     glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
     draw3DObject(BackgroundObject[current].object);
+  }
+
+  if (BackgroundObject["bird1up"].status) {
+    BackgroundObject["bird1up"].angle -= 1;
+    BackgroundObject["bird1down"].angle += 1;
+    if (BackgroundObject["bird1up"].angle == -15.0) BackgroundObject["bird1up"].status = 0;
+  } else {
+    BackgroundObject["bird1up"].angle += 1;
+    BackgroundObject["bird1down"].angle -= 1;
+    if (BackgroundObject["bird1up"].angle == 15.0) BackgroundObject["bird1up"].status = 1;
   }
 
   for (auto i = LaserObject.begin(); i != LaserObject.end(); i++) {
