@@ -63,11 +63,17 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods) 
 
   if (action == GLFW_RELEASE) {
     switch (key) {
-      case GLFW_KEY_C:
-      //      rectangle_rot_status = !rectangle_rot_status;
+      case GLFW_KEY_A:
+      for (auto i = LaserObject.begin(); i != LaserObject.end(); i++) {
+        string current = i->first;
+        LaserObject[current].up_translation_status = 0;
+      }
       break;
-      case GLFW_KEY_P:
-      //      triangle_rot_status = !triangle_rot_status;
+      case GLFW_KEY_Z:
+      for (auto i = LaserObject.begin(); i != LaserObject.end(); i++) {
+        string current = i->first;
+        LaserObject[current].down_translation_status = 0;
+      }
       break;
       case GLFW_KEY_X:
       // do something ..
@@ -91,25 +97,37 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods) 
       break;
       case GLFW_KEY_LEFT:
       x_change -= 0.3;
-      check_pan();
+      checkPan();
       break;
       case GLFW_KEY_RIGHT:
       x_change += 0.3;
-      check_pan();
+      checkPan();
       break;
       case GLFW_KEY_DOWN:
       y_change -= 0.3;
-      check_pan();
+      checkPan();
       break;
       case GLFW_KEY_UP:
       y_change += 0.3;
-      check_pan();
+      checkPan();
       break;
       default:
       break;
     }
   } else if (action == GLFW_PRESS) {
     switch (key) {
+      case GLFW_KEY_A:
+      for (auto i = LaserObject.begin(); i != LaserObject.end(); i++) {
+        string current = i->first;
+        LaserObject[current].up_translation_status = 1;
+      }
+      break;
+      case GLFW_KEY_Z:
+      for (auto i = LaserObject.begin(); i != LaserObject.end(); i++) {
+        string current = i->first;
+        LaserObject[current].down_translation_status = 1;
+      }
+      break;
       case GLFW_KEY_ESCAPE:
       quit(window);
       break;
@@ -177,7 +195,7 @@ void mousescroll(GLFWwindow* window, double xoffset, double yoffset) {
 }
 
 //Ensure the panning does not go out of the map
-void check_pan() {
+void checkPan() {
     if(x_change-4.0f/zoom_camera<-4)
         x_change=-4+4.0f/zoom_camera;
     else if(x_change+4.0f/zoom_camera>4)
@@ -301,6 +319,12 @@ void draw (GLFWwindow* window) {
 
     glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
     draw3DObject(LaserObject[current].object);
+  }
+
+  for (auto i = LaserObject.begin(); i != LaserObject.end(); i++) {
+    string current = i->first;
+    LaserObject[current].y += (LaserObject[current].up_translation_status) ? 0.01 : 0;
+    LaserObject[current].y -= (LaserObject[current].down_translation_status) ? 0.01 : 0;
   }
 
   for (auto i = LaserObject.begin(); i != LaserObject.end(); i++) {

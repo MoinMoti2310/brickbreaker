@@ -108,6 +108,8 @@ void createLaser(float x, float y, float w, float h, COLOR color) {
   laser.angle = LaserObject["gun"].angle;
   laser.object = object;
   laser.status = 1;
+  laser.up_translation_status = 0;
+  laser.down_translation_status = 0;
   Laser.push_back(laser);
   for (auto i = Laser.begin(); i != Laser.end(); i++) if (!(*i).status) Laser.erase(i);
 }

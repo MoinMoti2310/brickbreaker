@@ -73,6 +73,8 @@ typedef struct entity {
   float xspeed, yspeed;
   bool left_translation_status;
   bool right_translation_status;
+  bool up_translation_status;
+  bool down_translation_status;
   int value;
 }entity;
 
@@ -124,7 +126,7 @@ void createMirror(float x, float y, float w, float h, COLOR color, float angle);
 void checkReflection();
 void dragBasket();
 void mousescroll(GLFWwindow* window, double xoffset, double yoffset);
-void check_pan();
+void checkPan();
 void createHolder (float x, float y, float r, int parts, COLOR color);
 
 #endif
