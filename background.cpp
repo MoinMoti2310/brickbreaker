@@ -71,6 +71,6 @@ void createCircle (string id, COLOR color, float x, float y, float r, int parts,
   void backgroundObjectsEngine () {
     createCircle("sun", sun, -3.0, 3.0, 0.25, 100000, "sun");
     createRectangle("ground", 0.0, -4.0, 8.0, 2.0, brown1, brown1, brown1, brown1, 0);
-    createRectangle("bird1up", -2.5, 3.0, 0.5, 0.05, cloudwhite1, cloudwhite1, cloudwhite1, cloudwhite1, 15);
-    createRectangle("bird1down", -2.5, 3.0, 0.5, 0.05, cloudwhite1, cloudwhite1, cloudwhite1, cloudwhite1, -15);
+    createRectangle("bird1up", -2.5, 3.0, 0.5, 0.02, cloudwhite1, cloudwhite1, cloudwhite1, cloudwhite1, 15);
+    createRectangle("bird1down", -2.5, 3.0, 0.5, 0.02, cloudwhite1, cloudwhite1, cloudwhite1, cloudwhite1, -15);
   }

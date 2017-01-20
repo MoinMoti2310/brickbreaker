@@ -20,9 +20,11 @@ float camera_rotation_angle = 90;
 float current_laser_time = glfwGetTime();
 float prev_laser_time = 0;
 double x_mouse, y_mouse;
+double new_x_mouse, new_y_mouse;
 float x_change = 0;
 float y_change = 0;
 float zoom_camera = 1;
+float right_mouse_clicked = 0;
 
 COLOR grey = {168.0/255.0,168.0/255.0,168.0/255.0};
 COLOR silver = {192.0/255.0,192.0/255.0,192.0/255.0};
@@ -171,39 +173,39 @@ void keyboardChar (GLFWwindow* window, unsigned int key) {
 }
 
 void mousescroll(GLFWwindow* window, double xoffset, double yoffset) {
-    if (yoffset==-1) {
-        zoom_camera /= 1.1; //make it bigger than current size
-    }
-    else if(yoffset==1){
-        zoom_camera *= 1.1; //make it bigger than current size
-    }
-    if (zoom_camera<=1) {
-        zoom_camera = 1;
-    }
-    if (zoom_camera>=4) {
-        zoom_camera=4;
-    }
-    if(x_change-4.0f/zoom_camera<-4)
-        x_change=-4+4.0f/zoom_camera;
-    else if(x_change+4.0f/zoom_camera>4)
-        x_change=4-4.0f/zoom_camera;
-    if(y_change-4.0f/zoom_camera<-4)
-        y_change=-4+4.0f/zoom_camera;
-    else if(y_change+4.0f/zoom_camera>4)
-        y_change=4-4.0f/zoom_camera;
-    Matrices.projection = glm::ortho((float)(-4.0f/zoom_camera+x_change), (float)(4.0f/zoom_camera+x_change), (float)(-4.0f/zoom_camera+y_change), (float)(4.0f/zoom_camera+y_change), 0.1f, 500.0f);
+  if (yoffset==-1) {
+    zoom_camera /= 1.1; //make it bigger than current size
+  }
+  else if(yoffset==1){
+    zoom_camera *= 1.1; //make it bigger than current size
+  }
+  if (zoom_camera<=1) {
+    zoom_camera = 1;
+  }
+  if (zoom_camera>=4) {
+    zoom_camera=4;
+  }
+  if(x_change-4.0f/zoom_camera<-4)
+  x_change=-4+4.0f/zoom_camera;
+  else if(x_change+4.0f/zoom_camera>4)
+  x_change=4-4.0f/zoom_camera;
+  if(y_change-4.0f/zoom_camera<-4)
+  y_change=-4+4.0f/zoom_camera;
+  else if(y_change+4.0f/zoom_camera>4)
+  y_change=4-4.0f/zoom_camera;
+  Matrices.projection = glm::ortho((float)(-4.0f/zoom_camera+x_change), (float)(4.0f/zoom_camera+x_change), (float)(-4.0f/zoom_camera+y_change), (float)(4.0f/zoom_camera+y_change), 0.1f, 500.0f);
 }
 
 //Ensure the panning does not go out of the map
 void checkPan() {
-    if(x_change-4.0f/zoom_camera<-4)
-        x_change=-4+4.0f/zoom_camera;
-    else if(x_change+4.0f/zoom_camera>4)
-        x_change=4-4.0f/zoom_camera;
-    if(y_change-4.0f/zoom_camera<-4)
-        y_change=-4+4.0f/zoom_camera;
-    else if(y_change+4.0f/zoom_camera>4)
-        y_change=4-4.0f/zoom_camera;
+  if(x_change-4.0f/zoom_camera<-4)
+  x_change=-4+4.0f/zoom_camera;
+  else if(x_change+4.0f/zoom_camera>4)
+  x_change=4-4.0f/zoom_camera;
+  if(y_change-4.0f/zoom_camera<-4)
+  y_change=-4+4.0f/zoom_camera;
+  else if(y_change+4.0f/zoom_camera>4)
+  y_change=4-4.0f/zoom_camera;
 }
 
 /* Executed when a mouse button is pressed/released */
@@ -216,21 +218,26 @@ void mouseButton (GLFWwindow* window, int button, int action, int mods) {
       y_mouse -= 300;
       x_mouse = x_mouse*4.0/300.0;
       y_mouse = -y_mouse*4.0/300.0;
-//      cout << x_mouse << "|" << y_mouse << endl;
-      if (y_mouse > -3.0) LaserObject["gun"].angle = atan((LaserObject["gun"].y - y_mouse)/(LaserObject["gun"].x - x_mouse))*180.0f/M_PI;
+      if (x_mouse < -2.0) dragLaser();
+      else if (y_mouse > -3.0) LaserObject["gun"].status = 1;
       else dragBasket();
     }
     if (action == GLFW_RELEASE) {
-      if (y_mouse > -3.0) laserEngine();
-      else {
+      if (x_mouse < -2.0) {
+        LaserObject["gun"].drag_status = 0;
+        LaserObject["holder"].drag_status = 0;
+      } else  if (y_mouse > -3.0) {
+        laserEngine();
+        LaserObject["gun"].status = 0;
+      } else {
         Basket["red"].status = 0;
         Basket["green"].status = 0;
       }
     }
     break;
     case GLFW_MOUSE_BUTTON_RIGHT:
-    if (action == GLFW_PRESS)
-    if (action == GLFW_RELEASE)
+    if (action == GLFW_PRESS) right_mouse_clicked = 1;
+    if (action == GLFW_RELEASE) right_mouse_clicked = 0;
     break;
     default:
     break;
@@ -267,172 +274,199 @@ void reshapeWindow (GLFWwindow* window, int width, int height) {
 /* Edit this function according to your assignment */
 void draw (GLFWwindow* window) {
 
-  Matrices.projection = glm::ortho(-4.0f/zoom_camera+x_change, 4.0f/zoom_camera+x_change, -4.0f/zoom_camera+y_change, 4.0f/zoom_camera+y_change, 0.1f, 500.0f);
+  /*  glfwGetCursorPos(window, &new_x_mouse, &new_y_mouse);
+  if(right_mouse_clicked==1){
+  x_change+=new_x_mouse-x_mouse;
+  y_change-=new_y_mouse-y_mouse;
+  checkPan();
+}
 
-  // clear the color and depth in the frame buffer
-  glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+Matrices.projection = glm::ortho(-4.0f/zoom_camera+x_change, 4.0f/zoom_camera+x_change, -4.0f/zoom_camera+y_change, 4.0f/zoom_camera+y_change, 0.1f, 500.0f);
+glfwGetCursorPos(window, &x_mouse, &y_mouse);
+*/
+// clear the color and depth in the frame buffer
+glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  // use the loaded shader program
-  // Don't change unless you know what you are doing
-  glUseProgram (programID);
+// use the loaded shader program
+// Don't change unless you know what you are doing
+glUseProgram (programID);
 
-  // Eye - Location of camera. Don't change unless you are sure!!
-  glm::vec3 eye ( 5*cos(camera_rotation_angle*M_PI/180.0f), 0, 5*sin(camera_rotation_angle*M_PI/180.0f) );
-  // Target - Where is the camera looking at.  Don't change unless you are sure!!
-  glm::vec3 target (0, 0, 0);
-  // Up - Up vector defines tilt of camera.  Don't change unless you are sure!!
-  glm::vec3 up (0, 1, 0);
+// Eye - Location of camera. Don't change unless you are sure!!
+glm::vec3 eye ( 5*cos(camera_rotation_angle*M_PI/180.0f), 0, 5*sin(camera_rotation_angle*M_PI/180.0f) );
+// Target - Where is the camera looking at.  Don't change unless you are sure!!
+glm::vec3 target (0, 0, 0);
+// Up - Up vector defines tilt of camera.  Don't change unless you are sure!!
+glm::vec3 up (0, 1, 0);
 
-  // Compute Camera matrix (view)
-  // Matrices.view = glm::lookAt( eye, target, up ); // Rotating Camera for 3D
-  //  Don't change unless you are sure!!
-  Matrices.view = glm::lookAt(glm::vec3(0,0,3), glm::vec3(0,0,0), glm::vec3(0,1,0)); // Fixed camera for 2D (ortho) in XY plane
+// Compute Camera matrix (view)
+// Matrices.view = glm::lookAt( eye, target, up ); // Rotating Camera for 3D
+//  Don't change unless you are sure!!
+Matrices.view = glm::lookAt(glm::vec3(0,0,3), glm::vec3(0,0,0), glm::vec3(0,1,0)); // Fixed camera for 2D (ortho) in XY plane
 
-  // Compute ViewProject matrix as view/camera might not be changed for this frame (basic scenario)
-  //  Don't change unless you are sure!!
-  glm::mat4 VP = Matrices.projection * Matrices.view;
+// Compute ViewProject matrix as view/camera might not be changed for this frame (basic scenario)
+//  Don't change unless you are sure!!
+glm::mat4 VP = Matrices.projection * Matrices.view;
 
-  // Send our transformation to the currently bound shader, in the "MVP" uniform
-  // For each model you render, since the MVP will be different (at least the M part)
-  //  Don't change unless you are sure!!
-  glm::mat4 MVP;	// MVP = Projection * View * Model
+// Send our transformation to the currently bound shader, in the "MVP" uniform
+// For each model you render, since the MVP will be different (at least the M part)
+//  Don't change unless you are sure!!
+glm::mat4 MVP;	// MVP = Projection * View * Model
 
-  for (auto i = BackgroundObject.begin(); i != BackgroundObject.end(); i++) {
-    string current = i->first;
-    Matrices.model = glm::mat4(1.0f);
-    glm::mat4 translateObject = glm::translate(glm::vec3(BackgroundObject[current].x, BackgroundObject[current].y, 0.0f));
-    glm::mat4 rotateObject = glm::rotate((float)(BackgroundObject[current].angle*M_PI/180.0f), glm::vec3(0,0,1));
-    glm::mat4 objectTransform = translateObject*rotateObject;
-    Matrices.model *= objectTransform;
-    MVP = VP * Matrices.model;
+for (auto i = BackgroundObject.begin(); i != BackgroundObject.end(); i++) {
+  string current = i->first;
+  Matrices.model = glm::mat4(1.0f);
+  glm::mat4 translateObject = glm::translate(glm::vec3(BackgroundObject[current].x, BackgroundObject[current].y, 0.0f));
+  glm::mat4 rotateObject = glm::rotate((float)(BackgroundObject[current].angle*M_PI/180.0f), glm::vec3(0,0,1));
+  glm::mat4 objectTransform = translateObject*rotateObject;
+  Matrices.model *= objectTransform;
+  MVP = VP * Matrices.model;
 
-    glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
-    draw3DObject(BackgroundObject[current].object);
-  }
+  glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+  draw3DObject(BackgroundObject[current].object);
+}
 
-  if (BackgroundObject["bird1up"].status) {
-    BackgroundObject["bird1up"].angle -= 1;
-    BackgroundObject["bird1down"].angle += 1;
-    if (BackgroundObject["bird1up"].angle == -15.0) BackgroundObject["bird1up"].status = 0;
-  } else {
-    BackgroundObject["bird1up"].angle += 1;
-    BackgroundObject["bird1down"].angle -= 1;
-    if (BackgroundObject["bird1up"].angle == 15.0) BackgroundObject["bird1up"].status = 1;
-  }
+if (BackgroundObject["bird1up"].status) {
+  BackgroundObject["bird1up"].angle -= 1;
+  BackgroundObject["bird1down"].angle += 1;
+  if (BackgroundObject["bird1up"].angle == -15.0) BackgroundObject["bird1up"].status = 0;
+} else {
+  BackgroundObject["bird1up"].angle += 1;
+  BackgroundObject["bird1down"].angle -= 1;
+  if (BackgroundObject["bird1up"].angle == 15.0) BackgroundObject["bird1up"].status = 1;
+}
 
-  for (auto i = LaserObject.begin(); i != LaserObject.end(); i++) {
-    string current = i->first;
-    Matrices.model = glm::mat4(1.0f);
-    glm::mat4 translateObject = glm::translate(glm::vec3(LaserObject[current].x, LaserObject[current].y, 0.0f));
-    glm::mat4 rotateObject = glm::rotate((float)(LaserObject[current].angle*M_PI/180.0f), glm::vec3(0,0,1));
-    glm::mat4 objectTransform = translateObject*rotateObject;
-    Matrices.model *= objectTransform;
-    MVP = VP * Matrices.model;
+for (auto i = LaserObject.begin(); i != LaserObject.end(); i++) {
+  string current = i->first;
+  Matrices.model = glm::mat4(1.0f);
+  glm::mat4 translateObject = glm::translate(glm::vec3(LaserObject[current].x, LaserObject[current].y, 0.0f));
+  glm::mat4 rotateObject = glm::rotate((float)(LaserObject[current].angle*M_PI/180.0f), glm::vec3(0,0,1));
+  glm::mat4 objectTransform = translateObject*rotateObject;
+  Matrices.model *= objectTransform;
+  MVP = VP * Matrices.model;
 
-    glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
-    draw3DObject(LaserObject[current].object);
-  }
+  glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+  draw3DObject(LaserObject[current].object);
+}
 
-  for (auto i = LaserObject.begin(); i != LaserObject.end(); i++) {
-    string current = i->first;
-    LaserObject[current].y += (LaserObject[current].up_translation_status) ? 0.01 : 0;
-    LaserObject[current].y -= (LaserObject[current].down_translation_status) ? 0.01 : 0;
-  }
+for (auto i = LaserObject.begin(); i != LaserObject.end(); i++) {
+  string current = i->first;
+  LaserObject[current].y += (LaserObject[current].up_translation_status) ? 0.01 : 0;
+  LaserObject[current].y -= (LaserObject[current].down_translation_status) ? 0.01 : 0;
+}
 
-  for (auto i = LaserObject.begin(); i != LaserObject.end(); i++) {
-    string current = i->first;
-    LaserObject[current].angle += LaserObject[current].rotation_speed*LaserObject[current].rotation_dir;
-  }
+if (LaserObject["gun"].status) {
+  glfwGetCursorPos(window, &x_mouse, &y_mouse);
+  x_mouse -= 300;
+  y_mouse -= 300;
+  x_mouse = x_mouse*4.0/300.0;
+  y_mouse = -y_mouse*4.0/300.0;
+  LaserObject["gun"].angle = atan((LaserObject["gun"].y - y_mouse)/(LaserObject["gun"].x - x_mouse))*180.0f/M_PI;
+}
 
-  for (auto i = Basket.begin(); i != Basket.end(); i++) {
-    string current = i->first;
-    Matrices.model = glm::mat4(1.0f);
-    glm::mat4 translateObject = glm::translate(glm::vec3(Basket[current].x, Basket[current].y, 0.0f));
-    Matrices.model *= translateObject;
-    MVP = VP * Matrices.model;
+for (auto i = LaserObject.begin(); i != LaserObject.end(); i++) {
+  string current = i->first;
+  LaserObject[current].angle += LaserObject[current].rotation_speed*LaserObject[current].rotation_dir;
+}
 
-    glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
-    draw3DObject(Basket[current].object);
-  }
+if (LaserObject["gun"].drag_status || LaserObject["holder"].drag_status) {
+  float height_diff = y_mouse - LaserObject["gun"].y;
+  glfwGetCursorPos(window, &x_mouse, &y_mouse);
+  x_mouse -= 300;
+  y_mouse -= 300;
+  x_mouse = x_mouse*4.0/300.0;
+  y_mouse = -y_mouse*4.0/300.0;
+  LaserObject["gun"].y = y_mouse - height_diff;
+  LaserObject["holder"].y = y_mouse - height_diff;
+}
 
-  Basket["red"].x -= (Basket["red"].left_translation_status) ? 0.01 : 0;
-  Basket["green"].x -= (Basket["green"].left_translation_status) ? 0.01 : 0;
-  Basket["red"].x += (Basket["red"].right_translation_status) ? 0.01 : 0;
-  Basket["green"].x += (Basket["green"].right_translation_status) ? 0.01 : 0;
+for (auto i = Basket.begin(); i != Basket.end(); i++) {
+  string current = i->first;
+  Matrices.model = glm::mat4(1.0f);
+  glm::mat4 translateObject = glm::translate(glm::vec3(Basket[current].x, Basket[current].y, 0.0f));
+  Matrices.model *= translateObject;
+  MVP = VP * Matrices.model;
 
-  if (Basket["red"].status) {
-    float width_diff_red = x_mouse - Basket["red"].x;
-    glfwGetCursorPos(window, &x_mouse, &y_mouse);
-    x_mouse -= 300;
-    y_mouse -= 300;
-    x_mouse = x_mouse*4.0/300.0;
-    y_mouse = -y_mouse*4.0/300.0;
-    Basket["red"].x = x_mouse - width_diff_red;
-  }
+  glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+  draw3DObject(Basket[current].object);
+}
 
-  if (Basket["green"].status) {
-    float width_diff_green = x_mouse - Basket["green"].x;
-    glfwGetCursorPos(window, &x_mouse, &y_mouse);
-    x_mouse -= 300;
-    y_mouse -= 300;
-    x_mouse = x_mouse*4.0/300.0;
-    y_mouse = -y_mouse*4.0/300.0;
-    Basket["green"].x = x_mouse - width_diff_green;
-  }
+Basket["red"].x -= (Basket["red"].left_translation_status) ? 0.01 : 0;
+Basket["green"].x -= (Basket["green"].left_translation_status) ? 0.01 : 0;
+Basket["red"].x += (Basket["red"].right_translation_status) ? 0.01 : 0;
+Basket["green"].x += (Basket["green"].right_translation_status) ? 0.01 : 0;
 
-  for (auto i = Mirror.begin(); i != Mirror.end(); i++) {
+if (Basket["red"].status) {
+  float width_diff_red = x_mouse - Basket["red"].x;
+  glfwGetCursorPos(window, &x_mouse, &y_mouse);
+  x_mouse -= 300;
+  y_mouse -= 300;
+  x_mouse = x_mouse*4.0/300.0;
+  y_mouse = -y_mouse*4.0/300.0;
+  Basket["red"].x = x_mouse - width_diff_red;
+}
+
+if (Basket["green"].status) {
+  float width_diff_green = x_mouse - Basket["green"].x;
+  glfwGetCursorPos(window, &x_mouse, &y_mouse);
+  x_mouse -= 300;
+  y_mouse -= 300;
+  x_mouse = x_mouse*4.0/300.0;
+  y_mouse = -y_mouse*4.0/300.0;
+  Basket["green"].x = x_mouse - width_diff_green;
+}
+
+for (auto i = Mirror.begin(); i != Mirror.end(); i++) {
+  Matrices.model = glm::mat4(1.0f);
+  glm::mat4 translateObject = glm::translate(glm::vec3((*i).x, (*i).y, 0.0f));
+  glm::mat4 rotateObject = glm::rotate((float)((*i).angle*M_PI/180.0f), glm::vec3(0,0,1));
+  Matrices.model *= translateObject*rotateObject;
+  MVP = VP * Matrices.model;
+
+  glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+  draw3DObject((*i).object);
+}
+
+for (auto i = Brick.begin(); i != Brick.end(); i++) {
+  Matrices.model = glm::mat4(1.0f);
+  glm::mat4 translateObject = glm::translate(glm::vec3((*i).x, (*i).y, 0.0f));
+  Matrices.model *= translateObject;
+  MVP = VP * Matrices.model;
+
+  glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+  draw3DObject((*i).object);
+}
+
+float translation_increments = 0.03;
+
+for (auto i = Brick.begin(); i != Brick.end(); i++) {
+  if ((*i).y < -5) {
+    Brick.erase(i);
+    brickEngine(1);
+  } else (*i).y = (*i).y - translation_increments;
+}
+
+for (auto i = Laser.begin(); i != Laser.end(); i++) {
+  if ((*i).status) {
     Matrices.model = glm::mat4(1.0f);
     glm::mat4 translateObject = glm::translate(glm::vec3((*i).x, (*i).y, 0.0f));
     glm::mat4 rotateObject = glm::rotate((float)((*i).angle*M_PI/180.0f), glm::vec3(0,0,1));
-    Matrices.model *= translateObject*rotateObject;
+    glm::mat4 objectTransform = translateObject*rotateObject;
+    Matrices.model *= objectTransform;
     MVP = VP * Matrices.model;
-
     glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
     draw3DObject((*i).object);
   }
+}
 
-  for (auto i = Brick.begin(); i != Brick.end(); i++) {
-    Matrices.model = glm::mat4(1.0f);
-    glm::mat4 translateObject = glm::translate(glm::vec3((*i).x, (*i).y, 0.0f));
-    Matrices.model *= translateObject;
-    MVP = VP * Matrices.model;
-
-    glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
-    draw3DObject((*i).object);
-  }
-
-  float translation_increments = 0.03;
-
-  for (auto i = Brick.begin(); i != Brick.end(); i++) {
-    if ((*i).y < -5) {
-      Brick.erase(i);
-      brickEngine(1);
-    } else (*i).y = (*i).y - translation_increments;
-  }
-
-  for (auto i = Laser.begin(); i != Laser.end(); i++) {
-    if ((*i).status) {
-      Matrices.model = glm::mat4(1.0f);
-      glm::mat4 translateObject = glm::translate(glm::vec3((*i).x, (*i).y, 0.0f));
-      glm::mat4 rotateObject = glm::rotate((float)((*i).angle*M_PI/180.0f), glm::vec3(0,0,1));
-      glm::mat4 objectTransform = translateObject*rotateObject;
-      Matrices.model *= objectTransform;
-      MVP = VP * Matrices.model;
-    }
-
-    glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
-    draw3DObject((*i).object);
-  }
-
-  for (auto i = Laser.begin(); i != Laser.end(); i++) {
-    if ((*i).status) {
-      if ((*i).y < -3 || (*i).y > 5 || (*i).x > 5 || (*i).x < -4) (*i).status = 0;
-      else {
-        (*i).x += ((*i).xspeed)*cos((*i).angle*M_PI/180.0f);
-        (*i).y += ((*i).yspeed)*sin((*i).angle*M_PI/180.0f);
-      }
+for (auto i = Laser.begin(); i != Laser.end(); i++) {
+  if ((*i).status) {
+    if ((*i).y < -3 || (*i).y > 5 || (*i).x > 5 || (*i).x < -4) (*i).status = 0;
+    else {
+      (*i).x += ((*i).xspeed)*cos((*i).angle*M_PI/180.0f);
+      (*i).y += ((*i).yspeed)*sin((*i).angle*M_PI/180.0f);
     }
   }
+}
 
 }
 

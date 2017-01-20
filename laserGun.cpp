@@ -34,6 +34,9 @@ void createGun(float x, float y, float w, float h, float angle, COLOR color) {
   gun.rotation_dir = 0;
   gun.angle = angle;
   gun.status = 0;
+  gun.drag_status = 0;
+  gun.up_translation_status = 0;
+  gun.down_translation_status = 0;
   gun.rotation_speed = 1;
   LaserObject["gun"] = gun;
 }
@@ -69,6 +72,9 @@ void createHolder (float x, float y, float r, int parts, COLOR color) {
   holder.radius = r;
   holder.color = color;
   holder.object = object;
+  holder.drag_status = 0;
+  holder.up_translation_status = 0;
+  holder.down_translation_status = 0;
   LaserObject["holder"] = holder;
 }
 
@@ -108,8 +114,6 @@ void createLaser(float x, float y, float w, float h, COLOR color) {
   laser.angle = LaserObject["gun"].angle;
   laser.object = object;
   laser.status = 1;
-  laser.up_translation_status = 0;
-  laser.down_translation_status = 0;
   Laser.push_back(laser);
   for (auto i = Laser.begin(); i != Laser.end(); i++) if (!(*i).status) Laser.erase(i);
 }
@@ -127,4 +131,13 @@ void laserEngine() {
     createLaser(x, y, 0.2, 0.05, coingold);
     prev_laser_time = glfwGetTime();
   }
+}
+
+void dragLaser() {
+  float width_diff_gun = x_mouse - LaserObject["gun"].x;
+  float height_diff_gun = y_mouse - LaserObject["gun"].y;
+  float width_diff_holder = x_mouse - LaserObject["holder"].x;
+  float height_diff_holder = y_mouse - LaserObject["holder"].y;
+  if (abs(width_diff_gun) < LaserObject["gun"].width/2.0 && abs(height_diff_gun) < LaserObject["gun"].height/2.0) LaserObject["gun"].drag_status = 1;
+  else if (abs(width_diff_holder) < LaserObject["holder"].width/2.0 && abs(height_diff_holder) < LaserObject["holder"].height/2.0) LaserObject["holder"].drag_status = 1;
 }

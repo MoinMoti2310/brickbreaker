@@ -69,8 +69,10 @@ typedef struct entity {
   int rotation_dir;
   VAO *object;
   int status;
+  int drag_status;
   float height, width;
-  float xspeed, yspeed;
+  float xspeed;
+  float yspeed;
   bool left_translation_status;
   bool right_translation_status;
   bool up_translation_status;
@@ -128,5 +130,6 @@ void dragBasket();
 void mousescroll(GLFWwindow* window, double xoffset, double yoffset);
 void checkPan();
 void createHolder (float x, float y, float r, int parts, COLOR color);
+void dragLaser();
 
 #endif
