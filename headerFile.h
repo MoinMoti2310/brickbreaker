@@ -77,6 +77,7 @@ typedef struct entity {
   bool right_translation_status;
   bool up_translation_status;
   bool down_translation_status;
+  bool reflection_status;
   int value;
 }entity;
 

@@ -45,11 +45,14 @@ void  mirrorEngine() {
 void checkReflection() {
   for (auto i = Mirror.begin(); i != Mirror.end(); i++) {
     for (auto j = Laser.begin(); j != Laser.end(); j++) {
-      if ((*j).status) {
+      if ((*j).reflection_status && (*j).status) {
         float slope = (j->y - i->y)/(j->x - i->x);
         float distance = (j->y - i->y)*(j->y - i->y) + (j->x - i->x)*(j->x - i->x);
         float angle_diff = abs(i->angle - j->angle);
-        if ((slope - tan(i->angle*M_PI/180.0f)) < 0.01 && distance < (i->width)*(i->width)/4.0) j->angle += 2*angle_diff;
+        if ((slope - tan(i->angle*M_PI/180.0f)) < 0.01 && distance < (i->width)*(i->width)/4.0) {
+          j->angle += 2*angle_diff;
+          j->reflection_status = 0;
+        }
       }
     }
   }

@@ -81,6 +81,16 @@ void createHolder (float x, float y, float r, int parts, COLOR color) {
 void createLaser(float x, float y, float w, float h, COLOR color) {
   w = w/2;
   h = h/2;
+  // float a = x-w, b = y+h, a2 = x+w, b2 = y-h;
+  /*GLfloat vertex_buffer_data [] = {
+    x, y, 0,
+    a, b, 0,
+    a2, y, 0,
+
+    a2, y, 0,
+    a, b2, 0,
+    x, y, 0
+  };*/
   GLfloat vertex_buffer_data [] = {
     -w,-h,0, // vertex 1
     -w,h,0, // vertex 2
@@ -114,6 +124,7 @@ void createLaser(float x, float y, float w, float h, COLOR color) {
   laser.angle = LaserObject["gun"].angle;
   laser.object = object;
   laser.status = 1;
+  laser.reflection_status = 1;
   Laser.push_back(laser);
   for (auto i = Laser.begin(); i != Laser.end(); i++) if (!(*i).status) Laser.erase(i);
 }
@@ -125,7 +136,7 @@ void laserGunEngine() {
 
 void laserEngine() {
   current_laser_time = glfwGetTime();
-  if (current_laser_time - prev_laser_time > 1) {
+  if (current_laser_time - prev_laser_time > 0.2) {
     float x = LaserObject["gun"].x + (LaserObject["gun"].width/2.0)*cos(LaserObject["gun"].angle*M_PI/180.0f);
     float y = LaserObject["gun"].y + (LaserObject["gun"].height*2.5)*sin(LaserObject["gun"].angle*M_PI/180.0f);
     createLaser(x, y, 0.2, 0.05, coingold);
