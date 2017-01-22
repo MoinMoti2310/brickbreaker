@@ -13,6 +13,7 @@ vector <entity> Brick;
 map <string, entity> Basket;
 map <string, entity> BackgroundObject;
 map <string, entity> LaserObject;
+map <string, entity> Led;
 vector <entity> Laser;
 vector <entity> Mirror;
 
@@ -26,6 +27,7 @@ float x_change = 0;
 float y_change = 0;
 float zoom_camera = 1;
 float right_mouse_clicked = 0;
+int score = 0;
 
 COLOR grey = {168.0/255.0,168.0/255.0,168.0/255.0};
 COLOR silver = {192.0/255.0,192.0/255.0,192.0/255.0};
@@ -53,7 +55,7 @@ COLOR cloudwhite1 = {204/255.0,255/255.0,255/255.0};
 COLOR lightpink = {255/255.0,122/255.0,173/255.0};
 COLOR darkpink = {255/255.0,51/255.0,119/255.0};
 COLOR white = {255/255.0,255/255.0,255/255.0};
-COLOR score = {117/255.0,78/255.0,40/255.0};
+COLOR scorecolor = {117/255.0,78/255.0,40/255.0};
 
 /**************************
 * Customizable functions *
@@ -336,6 +338,30 @@ void draw (GLFWwindow* window) {
     if (BackgroundObject["bird1up"].angle == 15.0) BackgroundObject["bird1up"].status = 1;
   }
 
+  resetLed();
+  int temp_score = score;
+  char val1 = temp_score % 10 + '0';
+  setLed1(val1);
+  temp_score = temp_score/10;
+  char val2 = temp_score % 10 + '0';
+  setLed2(val2);
+  temp_score = temp_score/10;
+  char val3 = temp_score % 10 + '0';
+  setLed3(val3);
+
+  for (auto i = Led.begin(); i != Led.end(); i++) {
+    string current = i->first;
+    if (Led[current].status) {
+      Matrices.model = glm::mat4(1.0f);
+      glm::mat4 translateObject = glm::translate(glm::vec3(Led[current].x, Led[current].y, 0.0f));
+      Matrices.model *= translateObject;
+      MVP = VP * Matrices.model;
+
+      glUniformMatrix4fv(Matrices.MatrixID, 1, GL_FALSE, &MVP[0][0]);
+      draw3DObject(Led[current].object);
+    }
+  }
+
   for (auto i = LaserObject.begin(); i != LaserObject.end(); i++) {
     string current = i->first;
     Matrices.model = glm::mat4(1.0f);
@@ -465,7 +491,6 @@ void draw (GLFWwindow* window) {
       else {
         (*i).x += ((*i).xspeed)*cos((*i).angle*M_PI/180.0f);
         (*i).y += ((*i).yspeed)*sin((*i).angle*M_PI/180.0f);
-        (*i).reflection_status = ((*i).reflection_status) ? 0 : 1;
       }
     }
   }
@@ -528,6 +553,7 @@ void initGL (GLFWwindow* window, int width, int height) {
   //  createTriangle (); // Generate the VAO, VBOs, vertices data & copy into the array buffer
   //  createRectangle ();
   backgroundObjectsEngine();
+  ledEngine();
   laserGunEngine();
   basketEngine();
   mirrorEngine();

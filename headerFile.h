@@ -56,7 +56,7 @@ extern COLOR cloudwhite1;
 extern COLOR lightpink;
 extern COLOR darkpink;
 extern COLOR white;
-extern COLOR score;
+extern COLOR scorecolor;
 
 typedef struct entity {
   string id;
@@ -71,13 +71,13 @@ typedef struct entity {
   int status;
   int drag_status;
   float height, width;
+  float hit_time;
   float xspeed;
   float yspeed;
   bool left_translation_status;
   bool right_translation_status;
   bool up_translation_status;
   bool down_translation_status;
-  bool reflection_status;
   int value;
 }entity;
 
@@ -85,6 +85,7 @@ extern vector <entity> Brick;
 extern map <string, entity> Basket;
 extern map <string, entity> BackgroundObject;
 extern map <string, entity> LaserObject;
+extern map <string, entity> Led;
 extern vector <entity> Laser;
 extern vector <entity> Mirror;
 
@@ -95,6 +96,7 @@ extern float camera_rotation_angle;
 extern float current_laser_time;
 extern float prev_laser_time;
 extern double x_mouse, y_mouse;
+extern int score;
 
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path);
 static void error_callback(int error, const char* description) {
@@ -132,5 +134,12 @@ void mousescroll(GLFWwindow* window, double xoffset, double yoffset);
 void checkPan();
 void createHolder (float x, float y, float r, int parts, COLOR color);
 void dragLaser();
+void ledEngine();
+void resetLed();
+void createLed(string id, float x, float y, float w, float h, COLOR a_color, COLOR b_color, COLOR c_color, COLOR d_color, float angle);
+void setLed1(char val);
+void setLed2(char val);
+void setLed3
+(char val);
 
 #endif

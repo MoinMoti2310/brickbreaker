@@ -124,7 +124,7 @@ void createLaser(float x, float y, float w, float h, COLOR color) {
   laser.angle = LaserObject["gun"].angle;
   laser.object = object;
   laser.status = 1;
-  laser.reflection_status = 1;
+  laser.hit_time = glfwGetTime();
   Laser.push_back(laser);
   for (auto i = Laser.begin(); i != Laser.end(); i++) if (!(*i).status) Laser.erase(i);
 }
@@ -136,7 +136,7 @@ void laserGunEngine() {
 
 void laserEngine() {
   current_laser_time = glfwGetTime();
-  if (current_laser_time - prev_laser_time > 0.2) {
+  if (current_laser_time - prev_laser_time > 0.4) {
     float x = LaserObject["gun"].x + (LaserObject["gun"].width/2.0)*cos(LaserObject["gun"].angle*M_PI/180.0f);
     float y = LaserObject["gun"].y + (LaserObject["gun"].height*2.5)*sin(LaserObject["gun"].angle*M_PI/180.0f);
     createLaser(x, y, 0.2, 0.05, coingold);

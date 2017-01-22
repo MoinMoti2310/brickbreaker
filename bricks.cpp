@@ -78,6 +78,7 @@ void checkCollisionBrick() {
       min_w_diff = (i->width + Basket["red"].width)/2.0;
       if (height_diff < min_h_diff && width_diff < min_w_diff) {
         brickEngine(1);
+        score += 10;
         Brick.erase(i);
       }
     } else if (i->type == 2) {
@@ -87,6 +88,7 @@ void checkCollisionBrick() {
       min_w_diff = (i->width + Basket["green"].width)/2.0;
       if (height_diff < min_h_diff && width_diff < min_w_diff) {
         brickEngine(1);
+        score += 10;
         Brick.erase(i);
       }
     }
@@ -100,6 +102,7 @@ void checkCollisionBrick() {
         min_w_diff = (i->width + j->width)/2.0;
         if (height_diff < min_h_diff && width_diff < min_w_diff) {
           brickEngine(1);
+          score += (i->type) ? -5 : i->value;
           Brick.erase(i);
           (*j).status = 0;
         }
