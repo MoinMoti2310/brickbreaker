@@ -2,6 +2,7 @@
 #define headerFile
 
 #include <bits/stdc++.h>
+#include <irrKlang.h>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -12,6 +13,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 using namespace std;
+using namespace irrklang;
 
 struct VAO {
   GLuint VertexArrayID;
@@ -97,6 +99,8 @@ extern float current_laser_time;
 extern float prev_laser_time;
 extern double x_mouse, y_mouse;
 extern int score;
+extern float brick_speed;
+extern bool theend;
 
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path);
 static void error_callback(int error, const char* description) {

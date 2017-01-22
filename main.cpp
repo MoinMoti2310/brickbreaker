@@ -27,7 +27,9 @@ float x_change = 0;
 float y_change = 0;
 float zoom_camera = 1;
 float right_mouse_clicked = 0;
-int score = 0;
+int score = 20;
+float brick_speed = 0.03;
+bool theend = 0;
 
 COLOR grey = {168.0/255.0,168.0/255.0,168.0/255.0};
 COLOR silver = {192.0/255.0,192.0/255.0,192.0/255.0};
@@ -68,17 +70,23 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods) 
 
   if (action == GLFW_RELEASE) {
     switch (key) {
-      case GLFW_KEY_A:
+      case GLFW_KEY_S:
       for (auto i = LaserObject.begin(); i != LaserObject.end(); i++) {
         string current = i->first;
         LaserObject[current].up_translation_status = 0;
       }
       break;
-      case GLFW_KEY_Z:
+      case GLFW_KEY_F:
       for (auto i = LaserObject.begin(); i != LaserObject.end(); i++) {
         string current = i->first;
         LaserObject[current].down_translation_status = 0;
       }
+      break;
+      case GLFW_KEY_M:
+      brick_speed += (brick_speed < 0.05) ? 0.01 : 0;
+      break;
+      case GLFW_KEY_N:
+      brick_speed -= (brick_speed > 0.01) ? 0.01 : 0;
       break;
       case GLFW_KEY_X:
       // do something ..
@@ -95,9 +103,9 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods) 
       case GLFW_KEY_RIGHT_ALT:
       Basket["green"].right_translation_status = 0;
       break;
-      case GLFW_KEY_PAGE_UP:
+      case GLFW_KEY_A:
       LaserObject["gun"].rotation_dir = 0;
-      case GLFW_KEY_PAGE_DOWN:
+      case GLFW_KEY_Z:
       LaserObject["gun"].rotation_dir = 0;
       break;
       case GLFW_KEY_LEFT:
@@ -116,25 +124,61 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods) 
       y_change += 0.3;
       checkPan();
       break;
+      case GLFW_KEY_PAGE_UP:
+      zoom_camera *= 1.1;
+      if (zoom_camera<=1) {
+        zoom_camera = 1;
+      }
+      if (zoom_camera>=4) {
+        zoom_camera=4;
+      }
+      if(x_change-4.0f/zoom_camera<-4)
+      x_change=-4+4.0f/zoom_camera;
+      else if(x_change+4.0f/zoom_camera>4)
+      x_change=4-4.0f/zoom_camera;
+      if(y_change-4.0f/zoom_camera<-4)
+      y_change=-4+4.0f/zoom_camera;
+      else if(y_change+4.0f/zoom_camera>4)
+      y_change=4-4.0f/zoom_camera;
+      Matrices.projection = glm::ortho((float)(-4.0f/zoom_camera+x_change), (float)(4.0f/zoom_camera+x_change), (float)(-4.0f/zoom_camera+y_change), (float)(4.0f/zoom_camera+y_change), 0.1f, 500.0f);
+      break;
+      case GLFW_KEY_PAGE_DOWN:
+      zoom_camera /= 1.1;
+      if (zoom_camera<=1) {
+        zoom_camera = 1;
+      }
+      if (zoom_camera>=4) {
+        zoom_camera=4;
+      }
+      if(x_change-4.0f/zoom_camera<-4)
+      x_change=-4+4.0f/zoom_camera;
+      else if(x_change+4.0f/zoom_camera>4)
+      x_change=4-4.0f/zoom_camera;
+      if(y_change-4.0f/zoom_camera<-4)
+      y_change=-4+4.0f/zoom_camera;
+      else if(y_change+4.0f/zoom_camera>4)
+      y_change=4-4.0f/zoom_camera;
+      Matrices.projection = glm::ortho((float)(-4.0f/zoom_camera+x_change), (float)(4.0f/zoom_camera+x_change), (float)(-4.0f/zoom_camera+y_change), (float)(4.0f/zoom_camera+y_change), 0.1f, 500.0f);
+      break;
       default:
       break;
     }
   } else if (action == GLFW_PRESS) {
     switch (key) {
-      case GLFW_KEY_A:
+      case GLFW_KEY_S:
       for (auto i = LaserObject.begin(); i != LaserObject.end(); i++) {
         string current = i->first;
         LaserObject[current].up_translation_status = 1;
       }
       break;
-      case GLFW_KEY_Z:
+      case GLFW_KEY_F:
       for (auto i = LaserObject.begin(); i != LaserObject.end(); i++) {
         string current = i->first;
         LaserObject[current].down_translation_status = 1;
       }
       break;
       case GLFW_KEY_ESCAPE:
-      quit(window);
+      theend = 1;
       break;
       case GLFW_KEY_LEFT_CONTROL:
       Basket["red"].left_translation_status = 1;
@@ -148,10 +192,10 @@ void keyboard (GLFWwindow* window, int key, int scancode, int action, int mods) 
       case GLFW_KEY_RIGHT_ALT:
       Basket["green"].right_translation_status = 1;
       break;
-      case GLFW_KEY_PAGE_UP:
+      case GLFW_KEY_A:
       LaserObject["gun"].rotation_dir = 1;
       break;
-      case GLFW_KEY_PAGE_DOWN:
+      case GLFW_KEY_Z:
       LaserObject["gun"].rotation_dir = -1;
       break;
       case GLFW_KEY_SPACE:
@@ -168,7 +212,7 @@ void keyboardChar (GLFWwindow* window, unsigned int key) {
   switch (key) {
     case 'Q':
     case 'q':
-    quit(window);
+    theend = 1;
     break;
     default:
     break;
@@ -177,7 +221,7 @@ void keyboardChar (GLFWwindow* window, unsigned int key) {
 
 void mousescroll(GLFWwindow* window, double xoffset, double yoffset) {
   if (yoffset==-1) {
-    zoom_camera /= 1.1; //make it bigger than current size
+    zoom_camera /= 1.1; //make it smaller than current size
   }
   else if(yoffset==1){
     zoom_camera *= 1.1; //make it bigger than current size
@@ -463,13 +507,11 @@ void draw (GLFWwindow* window) {
     draw3DObject((*i).object);
   }
 
-  float translation_increments = 0.03;
-
   for (auto i = Brick.begin(); i != Brick.end(); i++) {
     if ((*i).y < -5) {
       Brick.erase(i);
       brickEngine(1);
-    } else (*i).y = (*i).y - translation_increments;
+    } else (*i).y = (*i).y - brick_speed;
   }
 
   for (auto i = Laser.begin(); i != Laser.end(); i++) {
@@ -548,6 +590,20 @@ GLFWwindow* initGLFW (int width, int height) {
 /* Initialize the OpenGL rendering properties */
 /* Add all the models to be created here */
 void initGL (GLFWwindow* window, int width, int height) {
+
+  ISoundEngine* engine = createIrrKlangDevice();
+
+	if (!engine)
+	{
+		printf("Could not startup engine\n");
+	}
+
+	// To play a sound, we only to call play2D(). The second parameter
+	// tells the engine to play it looped.
+
+	// play some sound stream, looped
+	engine->play2D("irrKlang-64bit-1.5.0/media/shippuuden.wav", true);
+
   /* Objects should be created before any other gl function and shaders */
   // Create the models
   //  createTriangle (); // Generate the VAO, VBOs, vertices data & copy into the array buffer
@@ -580,6 +636,21 @@ void initGL (GLFWwindow* window, int width, int height) {
 }
 
 int main (int argc, char** argv) {
+
+  ISoundEngine* engine = createIrrKlangDevice();
+
+	if (!engine)
+	{
+		printf("Could not startup engine\n");
+	}
+
+	// To play a sound, we only to call play2D(). The second parameter
+	// tells the engine to play it looped.
+
+	// play some sound stream, looped
+	engine->play2D("irrKlang-64bit-1.5.0/media/welcome2.wav", false);
+
+
   int width = 600;
   int height = 600;
 
@@ -592,8 +663,25 @@ int main (int argc, char** argv) {
   double last_update_time = glfwGetTime(), current_time;
 
   /* Draw in loop */
+  float end_timer;
+  bool end_status = 0;
   while (!glfwWindowShouldClose(window)) {
+    if ((score < 0 || theend) && end_status == 0) {
+      end_status = 1;
+      end_timer = glfwGetTime();
+      ISoundEngine* engine = createIrrKlangDevice();
 
+    	if (!engine)
+    	{
+    		printf("Could not startup engine\n");
+    	}
+
+    	// To play a sound, we only to call play2D(). The second parameter
+    	// tells the engine to play it looped.
+
+    	// play some sound stream, looped
+    	engine->play2D("irrKlang-64bit-1.5.0/media/theend2.wav", false);
+    }
     // OpenGL Draw commands
     draw(window);
 
@@ -612,8 +700,8 @@ int main (int argc, char** argv) {
       // do something every 0.5 seconds ..
       last_update_time = current_time;
     }
+    if (end_status && current_time - end_timer > 5) break;
   }
-
   glfwTerminate();
   //    exit(EXIT_SUCCESS);
 }

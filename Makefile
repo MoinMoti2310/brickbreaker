@@ -1,4 +1,4 @@
-FLAGS=-lGL -lglfw -ldl -std=c++11
+FLAGS=-lGL -lglfw -ldl -I"irrKlang-64bit-1.5.0/include" -L"/usr/lib" irrKlang-64bit-1.5.0/bin/linux-gcc-64/libIrrKlang.so -pthread -std=c++11
 
 all: game
 

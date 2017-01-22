@@ -33,7 +33,7 @@ void createBricks (int type, int value, float x, float y, COLOR color, float w, 
   brick.object = object;
   brick.width = 2*w;
   brick.height = 2*h;
-  brick.yspeed = 0.03;
+  brick.yspeed = brick_speed;
   brick.xspeed = 0;
   brick.value = value;
   Brick.push_back(brick);
@@ -90,6 +90,25 @@ void checkCollisionBrick() {
         brickEngine(1);
         score += 10;
         Brick.erase(i);
+      }
+    } else if (i->type == 0) {
+      height_diff = abs(i->y - Basket["red"].y);
+      width_diff = abs(i->x - Basket["red"].x);
+      min_h_diff = (i->height + Basket["red"].height)/2.0;
+      min_w_diff = (i->width + Basket["red"].width)/2.0;
+      if (height_diff < min_h_diff && width_diff < min_w_diff) {
+        brickEngine(1);
+        Brick.erase(i);
+        theend = 1;
+      }
+      height_diff = abs(i->y - Basket["green"].y);
+      width_diff = abs(i->x - Basket["green"].x);
+      min_h_diff = (i->height + Basket["green"].height)/2.0;
+      min_w_diff = (i->width + Basket["green"].width)/2.0;
+      if (height_diff < min_h_diff && width_diff < min_w_diff) {
+        brickEngine(1);
+        Brick.erase(i);
+        theend = 1;
       }
     }
   }
