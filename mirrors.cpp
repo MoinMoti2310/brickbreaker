@@ -39,7 +39,9 @@ void createMirror(float x, float y, float w, float h, COLOR color, float angle) 
 
 void  mirrorEngine() {
   createMirror(0.0, 2.0, 0.5, 0.05, cloudwhite, 0);
-  createMirror(2.0, 2.0, 0.5, 0.05, cloudwhite, 90);
+  createMirror(2.0, 2.0, 0.5, 0.05, cloudwhite, -75);
+  createMirror(2.0, -2.0, 0.5, 0.05, cloudwhite, 75);
+  createMirror(0.0, -2.0, 0.5, 0.05, cloudwhite, 0);
 }
 
 void checkReflection() {

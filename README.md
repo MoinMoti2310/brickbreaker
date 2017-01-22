@@ -45,8 +45,10 @@ ABOUT THE GAME:
 
 BONUS:
 -> Background Sound
--> welcome voice over
--> the end voice over
+-> Welcome voice over
+-> The end voice over
+-> Game Won voice over
+-> Laser Sound
 -> Running scoreboard
 -> Silver Brick gives 50 points
 -> Golden Brick gives 100 points

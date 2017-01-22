@@ -136,7 +136,19 @@ void laserGunEngine() {
 
 void laserEngine() {
   current_laser_time = glfwGetTime();
-  if (current_laser_time - prev_laser_time > 0.5) {
+  if (current_laser_time - prev_laser_time > 0.7) {
+    ISoundEngine* engine = createIrrKlangDevice();
+
+  	if (!engine)
+  	{
+  		printf("Could not startup engine\n");
+  	}
+
+  	// To play a sound, we only to call play2D(). The second parameter
+  	// tells the engine to play it looped.
+
+  	// play some sound stream, looped
+  	engine->play2D("irrKlang-64bit-1.5.0/media/blast.wav", false);
     float x = LaserObject["gun"].x + (LaserObject["gun"].width/2.0)*cos(LaserObject["gun"].angle*M_PI/180.0f);
     float y = LaserObject["gun"].y + (LaserObject["gun"].height*2.5)*sin(LaserObject["gun"].angle*M_PI/180.0f);
     createLaser(x, y, 0.2, 0.05, coingold);

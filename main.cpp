@@ -682,6 +682,22 @@ int main (int argc, char** argv) {
     	// play some sound stream, looped
     	engine->play2D("irrKlang-64bit-1.5.0/media/theend2.wav", false);
     }
+    if (score > 999 && end_status == 0) {
+      end_status = 1;
+      end_timer = glfwGetTime();
+      ISoundEngine* engine = createIrrKlangDevice();
+
+    	if (!engine)
+    	{
+    		printf("Could not startup engine\n");
+    	}
+
+    	// To play a sound, we only to call play2D(). The second parameter
+    	// tells the engine to play it looped.
+
+    	// play some sound stream, looped
+    	engine->play2D("irrKlang-64bit-1.5.0/media/won.wav", false);
+    }
     // OpenGL Draw commands
     draw(window);
 

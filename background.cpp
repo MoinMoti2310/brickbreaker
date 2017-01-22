@@ -111,29 +111,29 @@ void createLed(string id, float x, float y, float w, float h, COLOR a_color, COL
 }
 
 void ledEngine() {
-  createLed("led1top", 1, 3.5, 0.2, 0.05, cloudwhite, cloudwhite ,cloudwhite, cloudwhite, 0);
-  createLed("led1middle", 1, 3.3, 0.2, 0.05, cloudwhite, cloudwhite, cloudwhite, cloudwhite, 0);
-  createLed("led1bottom", 1, 3.1, 0.2, 0.05, cloudwhite, cloudwhite, cloudwhite, cloudwhite, 0);
-  createLed("led1left1", 0.9, 3.4, 0.05, 0.2, cloudwhite, cloudwhite, cloudwhite, cloudwhite, 0);
-  createLed("led1right1", 1.1, 3.4, 0.05, 0.2, cloudwhite, cloudwhite, cloudwhite, cloudwhite, 0);
-  createLed("led1left2", 0.9, 3.2, 0.05, 0.2, cloudwhite, cloudwhite, cloudwhite, cloudwhite,0);
-  createLed("led1right2", 1.1, 3.2, 0.05, 0.2, cloudwhite, cloudwhite, cloudwhite, cloudwhite, 0);
+  createLed("led1top", 1, 3.5, 0.2, 0.05, scorecolor, scorecolor ,scorecolor, scorecolor, 0);
+  createLed("led1middle", 1, 3.3, 0.2, 0.05, scorecolor, scorecolor, scorecolor, scorecolor, 0);
+  createLed("led1bottom", 1, 3.1, 0.2, 0.05, scorecolor, scorecolor, scorecolor, scorecolor, 0);
+  createLed("led1left1", 0.9, 3.4, 0.05, 0.2, scorecolor, scorecolor, scorecolor, scorecolor, 0);
+  createLed("led1right1", 1.1, 3.4, 0.05, 0.2, scorecolor, scorecolor, scorecolor, scorecolor, 0);
+  createLed("led1left2", 0.9, 3.2, 0.05, 0.2, scorecolor, scorecolor, scorecolor, scorecolor,0);
+  createLed("led1right2", 1.1, 3.2, 0.05, 0.2, scorecolor, scorecolor, scorecolor, scorecolor, 0);
 
-  createLed("led2top", 0.7, 3.5, 0.2, 0.05, cloudwhite, cloudwhite, cloudwhite, cloudwhite, 0);
-  createLed("led2middle", 0.7, 3.3, 0.2, 0.05, cloudwhite, cloudwhite, cloudwhite, cloudwhite, 0);
-  createLed("led2bottom", 0.7, 3.1, 0.2, 0.05, cloudwhite, cloudwhite, cloudwhite, cloudwhite, 0);
-  createLed("led2left1", 0.6, 3.4, 0.05, 0.2, cloudwhite, cloudwhite, cloudwhite, cloudwhite, 0);
-  createLed("led2right1", 0.8, 3.4, 0.05, 0.2, cloudwhite, cloudwhite, cloudwhite, cloudwhite, 0);
-  createLed("led2left2", 0.6, 3.2, 0.05, 0.2, cloudwhite, cloudwhite, cloudwhite, cloudwhite, 0);
-  createLed("led2right2", 0.8, 3.2, 0.05, 0.2, cloudwhite, cloudwhite, cloudwhite, cloudwhite, 0);
+  createLed("led2top", 0.7, 3.5, 0.2, 0.05, scorecolor, scorecolor, scorecolor, scorecolor, 0);
+  createLed("led2middle", 0.7, 3.3, 0.2, 0.05, scorecolor, scorecolor, scorecolor, scorecolor, 0);
+  createLed("led2bottom", 0.7, 3.1, 0.2, 0.05, scorecolor, scorecolor, scorecolor, scorecolor, 0);
+  createLed("led2left1", 0.6, 3.4, 0.05, 0.2, scorecolor, scorecolor, scorecolor, scorecolor, 0);
+  createLed("led2right1", 0.8, 3.4, 0.05, 0.2, scorecolor, scorecolor, scorecolor, scorecolor, 0);
+  createLed("led2left2", 0.6, 3.2, 0.05, 0.2, scorecolor, scorecolor, scorecolor, scorecolor, 0);
+  createLed("led2right2", 0.8, 3.2, 0.05, 0.2, scorecolor, scorecolor, scorecolor, scorecolor, 0);
 
-  createLed("led3top", 0.4, 3.5, 0.2, 0.05, cloudwhite, cloudwhite, cloudwhite, cloudwhite, 0);
-  createLed("led3middle", 0.4, 3.3, 0.2, 0.05, cloudwhite, cloudwhite, cloudwhite, cloudwhite, 0);
-  createLed("led3bottom", 0.4, 3.1, 0.2, 0.05, cloudwhite, cloudwhite, cloudwhite, cloudwhite, 0);
-  createLed("led3left1", 0.3, 3.4, 0.05, 0.2, cloudwhite, cloudwhite, cloudwhite, cloudwhite, 0);
-  createLed("led3right1", 0.5, 3.4, 0.05, 0.2, cloudwhite, cloudwhite, cloudwhite, cloudwhite, 0);
-  createLed("led3left2", 0.3, 3.2, 0.05, 0.2, cloudwhite, cloudwhite, cloudwhite, cloudwhite, 0);
-  createLed("led3right2", 0.5, 3.2, 0.05, 0.2, cloudwhite, cloudwhite, cloudwhite, cloudwhite, 0);
+  createLed("led3top", 0.4, 3.5, 0.2, 0.05, scorecolor, scorecolor, scorecolor, scorecolor, 0);
+  createLed("led3middle", 0.4, 3.3, 0.2, 0.05, scorecolor, scorecolor, scorecolor, scorecolor, 0);
+  createLed("led3bottom", 0.4, 3.1, 0.2, 0.05, scorecolor, scorecolor, scorecolor, scorecolor, 0);
+  createLed("led3left1", 0.3, 3.4, 0.05, 0.2, scorecolor, scorecolor, scorecolor, scorecolor, 0);
+  createLed("led3right1", 0.5, 3.4, 0.05, 0.2, scorecolor, scorecolor, scorecolor, scorecolor, 0);
+  createLed("led3left2", 0.3, 3.2, 0.05, 0.2, scorecolor, scorecolor, scorecolor, scorecolor, 0);
+  createLed("led3right2", 0.5, 3.2, 0.05, 0.2, scorecolor, scorecolor, scorecolor, scorecolor, 0);
 
 }
 
