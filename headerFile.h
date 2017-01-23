@@ -143,7 +143,7 @@ void resetLed();
 void createLed(string id, float x, float y, float w, float h, COLOR a_color, COLOR b_color, COLOR c_color, COLOR d_color, float angle);
 void setLed1(char val);
 void setLed2(char val);
-void setLed3
-(char val);
+void setLed3(char val);
+void createEllipse(string id, COLOR color, float x, float y, float r1, float r2, int parts);
 
 #endif

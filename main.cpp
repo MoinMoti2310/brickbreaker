@@ -465,6 +465,8 @@ void draw (GLFWwindow* window) {
   Basket["green"].x -= (Basket["green"].left_translation_status) ? 0.01 : 0;
   Basket["red"].x += (Basket["red"].right_translation_status) ? 0.01 : 0;
   Basket["green"].x += (Basket["green"].right_translation_status) ? 0.01 : 0;
+  Basket["redtop"].x = Basket["red"].x;
+  Basket["greentop"].x = Basket["green"].x;
 
   if (Basket["red"].status) {
     float width_diff_red = x_mouse - Basket["red"].x;
@@ -474,6 +476,7 @@ void draw (GLFWwindow* window) {
     x_mouse = x_mouse*4.0/300.0;
     y_mouse = -y_mouse*4.0/300.0;
     Basket["red"].x = x_mouse - width_diff_red;
+    Basket["redtop"].x = Basket["red"].x;
   }
 
   if (Basket["green"].status) {
@@ -484,6 +487,7 @@ void draw (GLFWwindow* window) {
     x_mouse = x_mouse*4.0/300.0;
     y_mouse = -y_mouse*4.0/300.0;
     Basket["green"].x = x_mouse - width_diff_green;
+    Basket["greentop"].x = Basket["green"].x;
   }
 
   for (auto i = Mirror.begin(); i != Mirror.end(); i++) {
